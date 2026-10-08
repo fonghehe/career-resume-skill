@@ -13,6 +13,7 @@ PUBLIC_FILES = (
     '.github/PULL_REQUEST_TEMPLATE.md',
     '.github/SECURITY.md',
     '.github/workflows/ci.yml',
+    '.github/workflows/pages.yml',
     '.github/workflows/release.yml',
     'LICENSE',
     'README.en.md',

@@ -79,6 +79,8 @@ python3 scripts/validate.py
 
 部署在子路径时资源 404，按[维护文档站](../maintainers/documentation.md)配置 `DOCS_BASE` 后重新构建。
 
+GitHub Pages 首页直接返回 404 时，先确认仓库 **Settings → Pages → Source** 为 **GitHub Actions**，并检查 **Deploy documentation to Pages** 的 `build` 和 `deploy` 是否均成功。**Validate skill** 只检查构建，不发布站点；首次启用和部署排错见[文档站维护](../maintainers/documentation.md#首次启用-github-pages)。
+
 ## 要报告问题
 
 提供命令、版本、脱敏报错和虚构复现材料。不要上传真实简历、个人采集报告或企业代码。格式问题可用[虚构示例](../example.md)复现。
