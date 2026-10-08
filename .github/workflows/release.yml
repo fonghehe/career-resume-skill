@@ -1,0 +1,61 @@
+name: Build draft release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Verify tag matches VERSION
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          python - <<'PY'
+          import os, sys
+          sys.path.insert(0, 'scripts')
+          from release import read_version
+          from pathlib import Path
+          if os.environ['RELEASE_TAG'] != 'v' + read_version(Path('.')):
+              raise SystemExit('Tag must match VERSION exactly')
+          PY
+      - run: python scripts/check.py --index
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm docs:build
+      - run: python scripts/release.py --output-dir local/dist/release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: public-release
+          path: local/dist/release/*
+          if-no-files-found: error
+  draft:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: public-release
+          path: release
+      - name: Create draft with verified public assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: gh release create "$RELEASE_TAG" release/* --verify-tag --draft --title "career-resume-skill $RELEASE_TAG" --notes "Public skill package with blank starter records."

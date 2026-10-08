@@ -1,0 +1,19 @@
+{
+  "name": "career-resume-skill-docs",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.16.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "docs:demo": "python3 scripts/create_demo.py --docs",
+    "docs:dev": "pnpm docs:demo && vitepress dev docs --host 127.0.0.1",
+    "docs:build": "pnpm docs:demo && vitepress build docs",
+    "docs:preview": "vitepress preview docs --port 4173"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "vitepress": "1.6.4"
+  }
+}

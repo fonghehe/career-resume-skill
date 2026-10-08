@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "title": "项目与职业时间线",
+    "subtitle": "请先填写自己的资料",
+    "updatedAt": "",
+    "dateConvention": "保留用户实际提供的日期精度，不推算未知日期。",
+    "repositoryNote": "Git 活动不代表任职日期或独立贡献。"
+  },
+  "profile": {
+    "name": "",
+    "englishName": "",
+    "careerStart": "",
+    "careerEnd": "",
+    "headline": ""
+  },
+  "leadership": {
+    "phases": [],
+    "metrics": [],
+    "responsibilities": [],
+    "boundary": "",
+    "copilot": []
+  },
+  "career": [],
+  "projects": [],
+  "repositories": []
+}

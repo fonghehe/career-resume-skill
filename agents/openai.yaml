@@ -1,0 +1,4 @@
+interface:
+  display_name: "career-resume-skill · 履历与简历"
+  short_description: "先从经历与材料建立可维护的职业履历，再按方向或岗位生成有事实依据的简历"
+  default_prompt: "使用 $career-resume-skill，先根据我提供的经历与材料生成可维护的文字履历，后续按我的方向或岗位要求从履历生成简历。"

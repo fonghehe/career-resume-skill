@@ -1,0 +1,651 @@
+{
+  "meta": {
+    "title": "林小禾 · 项目履历（虚构演示）",
+    "subtitle": "公司任职、职级变化、项目阶段与本人 Commit 统计。所有信息均为虚构演示。",
+    "updatedAt": "2025-07-01",
+    "dateConvention": "所有人物、公司、项目和日期均为虚构教学数据。",
+    "repositoryNote": "按本人署名展示仓库活动区间和提交数量。以下仓库、SHA 和记录均为虚构演示。",
+    "synthetic": true
+  },
+  "profile": {
+    "name": "林小禾（虚构）",
+    "englishName": "",
+    "careerStart": "2023-01-01",
+    "careerEnd": "2025-06-30",
+    "headline": "2 家公司 · 3 个任职阶段 · 3 个项目"
+  },
+  "leadership": {
+    "phases": [],
+    "metrics": [],
+    "responsibilities": [],
+    "boundary": "示例未设置人员管理经历。",
+    "copilot": []
+  },
+  "career": [
+    {
+      "id": "E01",
+      "organization": "示例甲公司（虚构）",
+      "role": "前端工程师",
+      "level": "P4",
+      "start": "2023-01-01",
+      "end": "2023-12-31",
+      "summary": "负责知识门户目录、筛选及文档预览。",
+      "sources": [
+        {
+          "field": "role",
+          "label": "虚构简历 · 任职记录",
+          "status": "resume-supported",
+          "excerpt": "前端工程师",
+          "path": "references/sources/demo-resume.md"
+        }
+      ]
+    },
+    {
+      "id": "E02A",
+      "organization": "示例乙公司 · 业务研发组（虚构）",
+      "groupOrganization": "示例乙公司（虚构）",
+      "role": "前端工程师",
+      "level": "P5",
+      "start": "2024-01-01",
+      "end": "2024-12-31",
+      "summary": "负责业务控制台页面、状态订阅和重连恢复。",
+      "sources": [
+        {
+          "field": "role",
+          "label": "虚构简历 · 任职记录",
+          "status": "resume-supported",
+          "excerpt": "前端工程师",
+          "path": "references/sources/demo-resume.md"
+        }
+      ]
+    },
+    {
+      "id": "E02B",
+      "organization": "示例乙公司 · 平台研发组（虚构）",
+      "groupOrganization": "示例乙公司（虚构）",
+      "role": "高级前端工程师",
+      "level": "P6",
+      "start": "2025-01-01",
+      "end": "2025-06-30",
+      "summary": "在虚构晋升阶段负责恢复流程规范、前端公共工具维护和模块协作。",
+      "sources": [
+        {
+          "field": "role",
+          "label": "虚构简历 · 任职记录",
+          "status": "resume-supported",
+          "excerpt": "高级前端工程师",
+          "path": "references/sources/demo-resume.md"
+        },
+        {
+          "field": "level",
+          "label": "虚构补充说明",
+          "status": "confirmed",
+          "excerpt": "示例职级 P6，仅用于展示。"
+        }
+      ],
+      "confirmedFields": [
+        "level"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "P01",
+      "name": "示例知识门户（虚构）",
+      "nature": "company",
+      "organization": "示例甲公司（虚构）",
+      "category": "业务前端",
+      "status": "resume-supported",
+      "start": "2023-03-01",
+      "end": "2023-11-30",
+      "tech": [
+        "Vue",
+        "TypeScript"
+      ],
+      "highlights": [
+        "导航与目录结构",
+        "搜索、筛选状态保留",
+        "按需预览与交接文档"
+      ],
+      "projectBackend": [
+        "Java"
+      ],
+      "backendParticipation": "只用于演示项目环境与个人贡献分开；示例没有个人 Java 后端工作。",
+      "collaboration": [
+        "Git"
+      ],
+      "summary": "知识目录、搜索筛选与按需文档预览。",
+      "milestones": [
+        {
+          "date": "2023.03",
+          "title": "项目启动",
+          "summary": "导航与目录结构"
+        },
+        {
+          "date": "2023.06",
+          "title": "功能完善",
+          "summary": "搜索、筛选状态保留"
+        },
+        {
+          "date": "2023.11",
+          "title": "优化与交接",
+          "summary": "按需预览与交接文档"
+        }
+      ],
+      "careerIds": [
+        "E01"
+      ],
+      "sources": [
+        {
+          "field": "summary",
+          "label": "虚构简历 · 项目部分",
+          "status": "resume-supported",
+          "excerpt": "知识目录、搜索筛选与按需文档预览。",
+          "path": "references/sources/demo-resume.md"
+        },
+        {
+          "field": "milestones",
+          "label": "虚构项目阶段补充",
+          "status": "confirmed",
+          "excerpt": "阶段日期与职责仅作功能演示。"
+        }
+      ],
+      "confirmedFields": [
+        "milestones"
+      ]
+    },
+    {
+      "id": "P02",
+      "name": "示例业务控制台（虚构）",
+      "nature": "company",
+      "organization": "示例乙公司（虚构）",
+      "category": "实时业务",
+      "status": "resume-supported",
+      "start": "2024-02-01",
+      "end": "2025-05-31",
+      "tech": [
+        "React",
+        "TypeScript",
+        "WebSocket"
+      ],
+      "highlights": [
+        "控制台页面与订阅",
+        "过滤重连后的旧消息",
+        "恢复测试与流程说明"
+      ],
+      "collaboration": [
+        "Git"
+      ],
+      "summary": "业务事件状态展示、断线重连恢复与测试。",
+      "milestones": [
+        {
+          "date": "2024.02",
+          "title": "基础开发",
+          "summary": "控制台页面与订阅"
+        },
+        {
+          "date": "2024.06",
+          "title": "可靠性修复",
+          "summary": "过滤重连后的旧消息"
+        },
+        {
+          "date": "2025.05",
+          "title": "维护与规范",
+          "summary": "恢复测试与流程说明"
+        }
+      ],
+      "careerIds": [
+        "E02A",
+        "E02B"
+      ],
+      "sources": [
+        {
+          "field": "summary",
+          "label": "虚构简历 · 项目部分",
+          "status": "resume-supported",
+          "excerpt": "业务事件状态展示、断线重连恢复与测试。",
+          "path": "references/sources/demo-resume.md"
+        },
+        {
+          "field": "milestones",
+          "label": "虚构项目阶段补充",
+          "status": "confirmed",
+          "excerpt": "阶段日期与职责仅作功能演示。"
+        }
+      ],
+      "confirmedFields": [
+        "milestones"
+      ]
+    },
+    {
+      "id": "P03",
+      "name": "前端工程工具集（虚构）",
+      "nature": "company",
+      "organization": "示例乙公司（虚构）",
+      "category": "工程化",
+      "status": "resume-supported",
+      "start": "2024-08-01",
+      "end": "2025-06-15",
+      "summary": "统一前端请求、状态恢复和项目脚手架的公共工具。",
+      "tech": [
+        "TypeScript",
+        "Node.js"
+      ],
+      "highlights": [
+        "请求封装与目录约定",
+        "脚手架与共享配置",
+        "配置校验与使用文档"
+      ],
+      "collaboration": [
+        "Git"
+      ],
+      "milestones": [
+        {
+          "date": "2024.08",
+          "title": "工具初始化",
+          "summary": "请求封装与目录约定"
+        },
+        {
+          "date": "2025.01",
+          "title": "工具扩展",
+          "summary": "脚手架与共享配置"
+        },
+        {
+          "date": "2025.06",
+          "title": "维护优化",
+          "summary": "配置校验与使用文档"
+        }
+      ],
+      "careerIds": [
+        "E02A",
+        "E02B"
+      ],
+      "sources": [
+        {
+          "field": "summary",
+          "label": "虚构简历 · 项目部分",
+          "status": "resume-supported",
+          "excerpt": "统一前端请求、状态恢复和项目脚手架的公共工具。",
+          "path": "references/sources/demo-resume.md"
+        },
+        {
+          "field": "milestones",
+          "label": "虚构项目阶段补充",
+          "status": "confirmed",
+          "excerpt": "阶段日期与职责仅作功能演示。"
+        }
+      ],
+      "confirmedFields": [
+        "milestones"
+      ],
+      "attachments": [
+        {
+          "label": "工具集阶段关系示意图（虚构）",
+          "path": "references/attachments/demo-phases.png"
+        },
+        {
+          "label": "工具集发布说明（虚构）",
+          "path": "references/attachments/demo-release.md"
+        }
+      ]
+    }
+  ],
+  "repositories": [
+    {
+      "name": "knowledge-portal",
+      "group": "知识门户",
+      "projectId": "P01",
+      "start": "2023-03-04T10:30:00+08:00",
+      "end": "2023-11-23T10:30:00+08:00",
+      "count": 5,
+      "tech": [
+        "Vue",
+        "TypeScript"
+      ],
+      "dateBasis": "author_date",
+      "note": "虚构的本人署名提交统计；不代表仓库所有提交或独立成果。",
+      "firstMessage": "feat: create portal navigation",
+      "lastMessage": "docs: write portal handover notes",
+      "activity": {
+        "monthly": {
+          "2023-03": 1,
+          "2023-04": 1,
+          "2023-06": 1,
+          "2023-09": 1,
+          "2023-11": 1
+        },
+        "modules": {
+          "src": 5,
+          "docs": 5
+        },
+        "types": {
+          "feat": 2,
+          "fix": 1,
+          "perf": 1,
+          "docs": 1
+        },
+        "activeMonths": 5,
+        "count": 5
+      },
+      "projectIds": [
+        "P01",
+        "P03"
+      ],
+      "projectCounts": {
+        "P01": 5,
+        "P03": 1
+      }
+    },
+    {
+      "name": "live-console",
+      "group": "实时控制台",
+      "projectId": "P02",
+      "start": "2024-02-07T10:30:00+08:00",
+      "end": "2025-05-22T10:30:00+08:00",
+      "count": 5,
+      "tech": [
+        "React",
+        "TypeScript",
+        "WebSocket"
+      ],
+      "dateBasis": "author_date",
+      "note": "虚构的本人署名提交统计；不代表仓库所有提交或独立成果。",
+      "firstMessage": "feat: scaffold event dashboard",
+      "lastMessage": "docs: describe recovery flow",
+      "activity": {
+        "monthly": {
+          "2024-02": 1,
+          "2024-04": 1,
+          "2024-06": 1,
+          "2024-10": 1,
+          "2025-05": 1
+        },
+        "modules": {
+          "src": 5,
+          "tests": 5
+        },
+        "types": {
+          "feat": 2,
+          "fix": 1,
+          "test": 1,
+          "docs": 1
+        },
+        "activeMonths": 5,
+        "count": 5
+      },
+      "projectIds": [
+        "P02"
+      ],
+      "projectCounts": {
+        "P02": 5
+      }
+    },
+    {
+      "name": "frontend-toolkit",
+      "group": "工程工具集",
+      "projectId": "P03",
+      "start": "2024-08-11T10:30:00+08:00",
+      "end": "2025-06-15T10:30:00+08:00",
+      "count": 4,
+      "tech": [
+        "TypeScript",
+        "Node.js"
+      ],
+      "dateBasis": "author_date",
+      "note": "虚构的本人署名提交统计；不代表仓库所有提交或独立成果。",
+      "firstMessage": "feat: initialize shared request utilities",
+      "lastMessage": "chore: validate configuration and update usage docs",
+      "activity": {
+        "monthly": {
+          "2024-08": 1,
+          "2024-09": 1,
+          "2025-01": 1,
+          "2025-06": 1
+        },
+        "modules": {
+          "packages": 4,
+          "docs": 4
+        },
+        "types": {
+          "feat": 3,
+          "chore": 1
+        },
+        "activeMonths": 4,
+        "count": 4
+      },
+      "projectIds": [
+        "P03"
+      ],
+      "projectCounts": {
+        "P03": 4
+      }
+    }
+  ],
+  "gitEvents": [
+    {
+      "id": "knowledge-portal:33982ae7b6f75bceb650c0afb5cb2038d856ea01",
+      "repository": "knowledge-portal",
+      "projectId": "P01",
+      "sha": "33982ae7b6f75bceb650c0afb5cb2038d856ea01",
+      "authorDate": "2023-03-04T10:30:00+08:00",
+      "committerDate": "2023-03-04T11:00:00+08:00",
+      "subject": "feat: create portal navigation",
+      "projectIds": [
+        "P01"
+      ],
+      "files": [
+        "src/portal/Navigation.vue",
+        "docs/portal.md"
+      ]
+    },
+    {
+      "id": "knowledge-portal:aa8acc7f1c054b49140d37eb24d65b44cd644ae8",
+      "repository": "knowledge-portal",
+      "projectId": "P01",
+      "sha": "aa8acc7f1c054b49140d37eb24d65b44cd644ae8",
+      "authorDate": "2023-04-18T10:30:00+08:00",
+      "committerDate": "2023-04-18T11:00:00+08:00",
+      "subject": "feat: add searchable content catalog",
+      "projectIds": [
+        "P01"
+      ],
+      "files": [
+        "src/portal/Navigation.vue",
+        "docs/portal.md"
+      ]
+    },
+    {
+      "id": "knowledge-portal:291aeb275e5a14b3bb370bfeb09d3c99320bf56c",
+      "repository": "knowledge-portal",
+      "projectId": "P01",
+      "sha": "291aeb275e5a14b3bb370bfeb09d3c99320bf56c",
+      "authorDate": "2023-06-02T10:30:00+08:00",
+      "committerDate": "2023-06-02T11:00:00+08:00",
+      "subject": "fix: preserve filters on page return",
+      "projectIds": [
+        "P01"
+      ],
+      "files": [
+        "src/portal/Navigation.vue",
+        "docs/portal.md"
+      ]
+    },
+    {
+      "id": "knowledge-portal:d48a2578c3684729f00292572157b033c7dd5ea6",
+      "repository": "knowledge-portal",
+      "projectId": "P01",
+      "sha": "d48a2578c3684729f00292572157b033c7dd5ea6",
+      "authorDate": "2023-09-13T10:30:00+08:00",
+      "committerDate": "2023-09-13T11:00:00+08:00",
+      "subject": "perf: lazy load document previews",
+      "projectIds": [
+        "P01"
+      ],
+      "files": [
+        "src/portal/Navigation.vue",
+        "docs/portal.md"
+      ]
+    },
+    {
+      "id": "knowledge-portal:143ddecf5e14b5f9941f17d43e01892caf970a6c",
+      "repository": "knowledge-portal",
+      "projectId": "P01",
+      "sha": "143ddecf5e14b5f9941f17d43e01892caf970a6c",
+      "authorDate": "2023-11-23T10:30:00+08:00",
+      "committerDate": "2023-11-23T11:00:00+08:00",
+      "subject": "docs: write portal handover notes",
+      "projectIds": [
+        "P01",
+        "P03"
+      ],
+      "files": [
+        "src/portal/Navigation.vue",
+        "docs/portal.md"
+      ]
+    },
+    {
+      "id": "live-console:9225790eaf27ee4aa682766d890719db5ca21590",
+      "repository": "live-console",
+      "projectId": "P02",
+      "sha": "9225790eaf27ee4aa682766d890719db5ca21590",
+      "authorDate": "2024-02-07T10:30:00+08:00",
+      "committerDate": "2024-02-07T11:00:00+08:00",
+      "subject": "feat: scaffold event dashboard",
+      "projectIds": [
+        "P02"
+      ],
+      "files": [
+        "src/events/recovery.ts",
+        "tests/recovery.test.ts"
+      ]
+    },
+    {
+      "id": "live-console:e7839e16e2a687ad37ef542641aae9a56372f2de",
+      "repository": "live-console",
+      "projectId": "P02",
+      "sha": "e7839e16e2a687ad37ef542641aae9a56372f2de",
+      "authorDate": "2024-04-16T10:30:00+08:00",
+      "committerDate": "2024-04-16T11:00:00+08:00",
+      "subject": "feat: subscribe to event updates",
+      "projectIds": [
+        "P02"
+      ],
+      "files": [
+        "src/events/recovery.ts",
+        "tests/recovery.test.ts"
+      ]
+    },
+    {
+      "id": "live-console:a4b4fe51fbd275e6c67de98390cb89c3275432b4",
+      "repository": "live-console",
+      "projectId": "P02",
+      "sha": "a4b4fe51fbd275e6c67de98390cb89c3275432b4",
+      "authorDate": "2024-06-20T10:30:00+08:00",
+      "committerDate": "2024-06-20T11:00:00+08:00",
+      "subject": "fix: ignore stale updates after reconnect",
+      "projectIds": [
+        "P02"
+      ],
+      "files": [
+        "src/events/recovery.ts",
+        "tests/recovery.test.ts"
+      ]
+    },
+    {
+      "id": "live-console:1afa267982377a8a09e5946ce8454bf990a48616",
+      "repository": "live-console",
+      "projectId": "P02",
+      "sha": "1afa267982377a8a09e5946ce8454bf990a48616",
+      "authorDate": "2024-10-09T10:30:00+08:00",
+      "committerDate": "2024-10-09T11:00:00+08:00",
+      "subject": "test: cover reconnect and cancellation",
+      "projectIds": [
+        "P02"
+      ],
+      "files": [
+        "src/events/recovery.ts",
+        "tests/recovery.test.ts"
+      ]
+    },
+    {
+      "id": "live-console:0f95f985bd9006906df690402675f0c27b0379d6",
+      "repository": "live-console",
+      "projectId": "P02",
+      "sha": "0f95f985bd9006906df690402675f0c27b0379d6",
+      "authorDate": "2025-05-22T10:30:00+08:00",
+      "committerDate": "2025-05-22T11:00:00+08:00",
+      "subject": "docs: describe recovery flow",
+      "projectIds": [
+        "P02"
+      ],
+      "files": [
+        "src/events/recovery.ts",
+        "tests/recovery.test.ts"
+      ]
+    },
+    {
+      "id": "frontend-toolkit:814bcd8a77aacbbff1d2dd9e005c65096f733190",
+      "repository": "frontend-toolkit",
+      "projectId": "P03",
+      "sha": "814bcd8a77aacbbff1d2dd9e005c65096f733190",
+      "authorDate": "2024-08-11T10:30:00+08:00",
+      "committerDate": "2024-08-11T11:00:00+08:00",
+      "subject": "feat: initialize shared request utilities",
+      "projectIds": [
+        "P03"
+      ],
+      "files": [
+        "packages/request/index.ts",
+        "docs/toolkit.md"
+      ]
+    },
+    {
+      "id": "frontend-toolkit:cfb76f5b4156e053be7448622e8e228a928286d0",
+      "repository": "frontend-toolkit",
+      "projectId": "P03",
+      "sha": "cfb76f5b4156e053be7448622e8e228a928286d0",
+      "authorDate": "2024-09-22T10:30:00+08:00",
+      "committerDate": "2024-09-22T11:00:00+08:00",
+      "subject": "feat: add reconnect state helpers",
+      "projectIds": [
+        "P03"
+      ],
+      "files": [
+        "packages/request/index.ts",
+        "docs/toolkit.md"
+      ]
+    },
+    {
+      "id": "frontend-toolkit:ba672967b48fd578d6f28336c78ebe8bfc63eed0",
+      "repository": "frontend-toolkit",
+      "projectId": "P03",
+      "sha": "ba672967b48fd578d6f28336c78ebe8bfc63eed0",
+      "authorDate": "2025-01-05T10:30:00+08:00",
+      "committerDate": "2025-01-05T11:00:00+08:00",
+      "subject": "feat: add reusable project scaffold",
+      "projectIds": [
+        "P03"
+      ],
+      "files": [
+        "packages/request/index.ts",
+        "docs/toolkit.md"
+      ]
+    },
+    {
+      "id": "frontend-toolkit:34ebbef4fa23f182a6c0933ac559790f36996046",
+      "repository": "frontend-toolkit",
+      "projectId": "P03",
+      "sha": "34ebbef4fa23f182a6c0933ac559790f36996046",
+      "authorDate": "2025-06-15T10:30:00+08:00",
+      "committerDate": "2025-06-15T11:00:00+08:00",
+      "subject": "chore: validate configuration and update usage docs",
+      "projectIds": [
+        "P03"
+      ],
+      "files": [
+        "packages/request/index.ts",
+        "docs/toolkit.md"
+      ]
+    }
+  ]
+}
