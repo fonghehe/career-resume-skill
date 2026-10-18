@@ -4,7 +4,10 @@ export default defineConfig({
   lang: 'zh-CN',
   title: 'career-resume-skill',
   description: '先从经历与材料生成完整职业履历，再按方向或岗位生成有依据的简历。',
-  srcExclude: ['private-usage.md', 'private/**', 'site/**'],
+  srcExclude: [
+    'private-usage.md', 'private/**', 'site/**',
+    'superpowers/**', 'plans/**', 'maintainers/skill-evaluation.md',
+  ],
   base: process.env.DOCS_BASE || '/career-resume-skill/',
   ignoreDeadLinks: false,
   themeConfig: {

@@ -2,9 +2,11 @@
 
 用户仍只需提供材料、项目目录及自然语言补充，不要求填写本文件里的结构。
 
-## 更新：保留已确认事实
+## 展示数据更新：保留已确认事实
 
-读取现有资料，智能体生成只包含新增或变化字段的 delta JSON。使用 `scripts/update_profile.py --delta 文件` 预览，随后 `--apply` 写入并重建页面。已有库不能重新初始化或整份覆盖。
+本节只在用户请求网页、维护已有网页或合并 Git 展示数据时读取。仅补充文字履历时，按 [career-workflow.md](career-workflow.md) 更新 Markdown 源记录并重建文字履历即可，无需生成 delta、展示 JSON 或网页。
+
+需要同步展示时，先维护源记录，再生成只包含新增或变化字段的 delta JSON。使用 `python3 scripts/update_profile.py --delta 文件` 预览，随后加 `--apply` 写入并重建页面。已有库不能重新初始化或整份覆盖。
 
 - `confirmedFields` 指定已确认字段；`sources` 中 `status: confirmed` 的 `field` 同样锁定。`status: confirmed` 的项目会保护现有事实字段。
 - 新阶段可以追加，但不能改写已有确认阶段。新材料与已确认字段冲突时保留旧值，把冲突交给用户。仅用户明确纠正的字段才能通过 `--confirmed-correction projects/P01.summary` 更新；不把“更新最近记录”当作更正授权。

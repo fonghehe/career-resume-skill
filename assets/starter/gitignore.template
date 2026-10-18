@@ -30,11 +30,28 @@ __pycache__/
 
 # Documentation dependencies and generated fictional preview.
 node_modules/
+/.pnpm-store/
 /docs/.vitepress/cache/
 /docs/.vitepress/dist/
 /docs/public/demo/
 /docs/site/public/demo/
 
+# Local Skill evaluation workspaces, outputs and comparison viewers.
+/career-resume-skill-workspace/
+/career-skill-eval-*/
+
+# Local agent instructions and generated planning/evaluation documents.
+/AGENTS.override.md
+/CLAUDE.md
+/CLAUDE.local.md
+/GEMINI.md
+/CODEX.md
+/task_plan.md
+/findings.md
+/progress.md
+/docs/superpowers/
+/docs/plans/
+/docs/maintainers/skill-evaluation.md
 
 # Local environments, test caches, logs and editor state.
 .venv/
