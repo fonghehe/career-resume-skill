@@ -32,7 +32,7 @@ python3 /实际安装路径/career-resume-skill/scripts/init_profile.py --worksp
 先导出空白公开副本，再交给安装器；不直接从含真实履历的工作副本安装。
 
 ```sh
-python3 scripts/package.py --public-dir local/dist/ecosystem/career-resume-skill
+python3 scripts/package.py --runtime --public-dir local/dist/ecosystem/career-resume-skill
 npx skills add ./local/dist/ecosystem/career-resume-skill --skill career-resume-skill --copy
 ```
 

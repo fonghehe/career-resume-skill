@@ -28,6 +28,7 @@ PUBLIC_FILES = (
     'assets/templates/match-report-template.md',
     'assets/templates/interview-template.md',
     'assets/templates/agent-entry-template.md',
+    'assets/templates/release-readme.md',
     'docs/.vitepress/config.mts',
     'docs/example.md',
     'docs/guide/first-library.md',
@@ -111,6 +112,42 @@ STARTER_FILES = (
 )
 
 
+# Runtime resources are selected from the controlled inventory, never a directory scan.
+# Repository maintenance files stay available to source exports and index checks only.
+RUNTIME_FILES = (
+    'LICENSE', 'README.md', 'SKILL.md', 'agents/openai.yaml',
+    'docs/example.md',
+    'references/career-workflow.md', 'references/enhancements.md', 'references/resume-workflow.md',
+    'scripts/build_career.py', 'scripts/build_timeline.py', 'scripts/bundle.py',
+    'scripts/career_data.py', 'scripts/create_demo.py', 'scripts/doctor.py',
+    'scripts/export_share.py', 'scripts/import_git_activity.py', 'scripts/init_profile.py',
+    'scripts/install_skill.py', 'scripts/package.py', 'scripts/update_profile.py', 'scripts/validate.py',
+    *(rel for rel in PUBLIC_FILES if rel.startswith(('docs/guide/', 'docs/reference/', 'assets/examples/'))),
+    *(rel for rel in PUBLIC_FILES if rel.startswith('assets/templates/')
+      and rel != 'assets/templates/release-readme.md'),
+)
+
+
+def is_source_tree(root):
+    """Recognize maintenance inputs without requiring them in an installed Skill."""
+    return any((Path(root) / rel).exists() for rel in ('VERSION', 'package.json', 'scripts/check.py'))
+
+
+def runtime_entries(root):
+    """Complete installable Skill, including every template and demo dependency."""
+    source_tree = is_source_tree(root)
+    entries = {}
+    for rel in RUNTIME_FILES:
+        source = 'assets/templates/release-readme.md' if rel == 'README.md' and source_tree else rel
+        entries[rel] = checked_file(root, source)
+    for rel in STARTER_FILES:
+        source = starter_source(rel)
+        entries[source] = checked_file(root, source)
+        if rel != '.gitignore':
+            entries[rel] = entries[source]
+    return entries
+
+
 def read_version(root):
     value = checked_file(root, 'VERSION').read_text(encoding='utf-8').strip()
     if not re.fullmatch(r'(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)', value):
@@ -158,7 +195,7 @@ def starter_source(relative):
 
 def personal_entries(root):
     from career_data import profile_root
-    entries = public_entries(root)
+    entries = public_entries(root) if is_source_tree(root) else runtime_entries(root)
     profile = profile_root(root)
     for folder in ('references', 'data', 'showcase'):
         base = profile / folder

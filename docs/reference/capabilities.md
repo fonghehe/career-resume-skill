@@ -26,8 +26,8 @@
 | 项目来源、截图和附件 | 智能体整理，网页构建时处理 | 保存在私人库并关联项目；受支持格式与大小见公共规则 `references/enhancements.md` |
 | 离线履历网页 | `build_timeline.py` | 任职阶段、项目卡与本人代码统计，可离线筛选查看 |
 | 选定范围分享 | `export_share.py` 或网页下载按钮 | 单独 HTML 副本，默认去掉来源、仓库标识及提交明细 |
-| 公开包与结构化私人备份 | `package.py`、`release.py` | 空模板公开 ZIP 或明确选择的私人记录备份，命名统一为 career-resume-skill |
-| 结构、来源、链接及网页一致性 | `validate.py`、`check.py` | 校验与临时导出回归测试；不核实职业事实真实性 |
+| 公开包与结构化私人备份 | `package.py` | 空模板运行 ZIP 或明确选择的私人记录备份；源码维护另用 `release.py` 生成版本产物 |
+| 结构、来源、链接及网页一致性 | `validate.py` | 结构校验，不核实职业事实真实性；源码维护另用 `check.py` 在临时公共副本执行回归 |
 
 完整参数见[工具命令](commands.md)。网页是附加视图，不代替文字履历；Git 活动不推导入离职日期、职称或业务成果。
 
@@ -41,4 +41,4 @@ PDF / Word / 扫描件的文字提取由当前智能体宿主提供；附件不�
 
 履历任务应给出文字履历和实际源记录；简历任务应给出正文与可回查的依据报告。先检查文件存在，再检查日期、归属、职责和来源是否符合材料。虚构示例只能用于演练，不能自动变成个人经历。
 
-确定性工具的测试范围见[行为测试](../maintainers/behavior-testing.md)。宿主的材料理解、追问、写作和 Word / PDF 排版需按具体产物验收，不能用 Python 测试结果替代。
+确定性工具的测试范围见[行为测试](https://fonghehe.github.io/career-resume-skill/maintainers/behavior-testing.html)。宿主的材料理解、追问、写作和 Word / PDF 排版需按具体产物验收，不能用 Python 测试结果替代。

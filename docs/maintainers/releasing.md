@@ -27,7 +27,7 @@ python3 scripts/package.py --public-dir /tmp/career-resume-skill-public
 python3 scripts/validate.py /tmp/career-resume-skill-public
 ```
 
-目标目录必须不存在，目录导出拒绝覆盖。ZIP 默认输出 `local/dist/career-resume-skill-public.zip`，使用受控公共文件清单，以 starter 替换资料和时间线，不复制 `.git`。导出中的空资料文件同样被忽略，首次提交只跟踪 starter，使用者 clone 后本地初始化。
+目标目录必须不存在，目录导出拒绝覆盖。ZIP 默认输出 `local/dist/career-resume-skill-public.zip`，使用独立的运行资源白名单，以 starter 替换资料和时间线。`--public-dir` 从源码导出完整公共工程，供维护与测试；加 `--runtime` 只导出可安装的运行目录。从已安装运行包导出时始终保留运行布局。二者都不复制 Git 历史或私人资料。
 
 默认不会复制真实项目卡、原始来源快照、确认记录、企业证据、旧投递示例、个人时间线 HTML、output、Git 历史以及个人专用说明 / 校验器。公共文件新增时同步 `scripts/bundle.py` 清单。
 
@@ -54,7 +54,11 @@ pnpm docs:build
 python3 scripts/release.py
 ```
 
-以当前 `0.1.0` 为例，产物是 `local/dist/releases/0.1.0/career-resume-skill-0.1.0.zip` 与同目录 `SHA256SUMS`。ZIP 顶层为 `career-resume-skill/`，包含 VERSION 和空档案，无 Git 历史和私人记录。`release.py` 会校验导出结构，但不会自动执行整个测试套件，所以上方检查仍是发布前提。重复目录拒绝覆盖，另指定 `--output-dir local/dist/releases/0.1.0-review` 可以重新复核。
+以版本 `1.0.1` 为例，产物是 `local/dist/releases/1.0.1/career-resume-skill-1.0.1.zip` 与同目录 `SHA256SUMS`。ZIP 顶层为 `career-resume-skill/`，版本只用于产物路径和标签，不写入包内。包内保留日常运行脚本、规则、模板、完整虚构示例和用户教程；不含 `VERSION`、`.gitignore`、`AGENTS.md`、`.github/`、`tests/`、维护脚本、维护文档和 Node / VitePress 构建配置。根 README 使用精简运行说明。
+
+`assets/starter/gitignore.template` 保留为初始化依赖，只有使用者运行 `init_profile.py` 或创建私人工作副本时才生成 `.gitignore`，不覆盖已有规则。运行包里的 `doctor.py` / `validate.py` 按运行资源清单检查，不再要求源码维护文件。
+
+`release.py` 校验导出结构，但不自动执行整个测试套件，所以上方检查仍是发布前提。`check.py` 在临时公共工程中运行回归，包含真正解压 Release 后执行诊断、校验、演示、独立工作副本、重新安装和重新打包，以及缺失演示资源的失败检查。重复目录拒绝覆盖，另指定 `--output-dir local/dist/releases/1.0.1-review` 可以重新复核。
 
 解压到新目录，运行 `doctor.py`、`validate.py` 和虚构演示。下载者可在产物目录运行跨平台校验：
 
@@ -78,8 +82,8 @@ PY
 确认公共提交和 VERSION 后，由维护者自行执行（当前版本示例）：
 
 ```sh
-git tag -a v0.1.0 -m "career-resume-skill 0.1.0"
-git push origin v0.1.0
+git tag -a v1.0.1 -m "career-resume-skill 1.0.1"
+git push origin v1.0.1
 ```
 
 **推送标签会触发 `.github/workflows/release.yml`。** 工作流检查标签与 VERSION 一致、实际 Git 索引、干净公开导出和全部回归测试，再构建文档和公开发布 ZIP。验证任务仅有读取权限；独立草稿任务下载产物后用写权限创建 draft，不自动发布或部署网页。草稿复核附件、说明和隐私边界后，维护者在 GitHub 点击 Publish release。
@@ -90,6 +94,6 @@ git push origin v0.1.0
 
 ## 分发给更多智能体
 
-发布同一个完整公开 Skill 包，保持 `SKILL.md` 名称与相对资源路径稳定，不为每个宿主复制一套履历流程。当前根目录入口可被 skills CLI 的根目录发现机制读取；本地先从白名单导出空副本再交给安装器，不能让安装器复制带私人材料的源工作区。操作见[多智能体教程](../guide/using-skill.md)。
+发布同一个完整运行 Skill 包，保持 `SKILL.md` 名称与相对资源路径稳定，不为每个宿主复制一套履历流程。当前根目录入口可被 skills CLI 的根目录发现机制读取；本地先用 `package.py --runtime --public-dir` 从白名单导出空副本再交给安装器，不能让安装器复制带私人材料的源工作区。操作见[多智能体教程](../guide/using-skill.md)。
 
 托管仓库或 Release 公开后，再以实际地址验证远程安装。新增客户端优先通过生态安装器、通用目录、ZIP 或短入口接入；仅在路径与平台契约经过核对后增加快捷方式。测试记录应区分“可安装”“可发现”“可运行”和附件/文档能力，不把客户端名称加入快捷列表当成实测通过。

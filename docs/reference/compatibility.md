@@ -70,4 +70,4 @@ CI 配置覆盖 Ubuntu 上 Python 3.9 / 3.14，以及 macOS 上 Python 3.14；�
 4. 让它列出读过的来源和写入文件；检查实际文件存在，公开空模板保持为空。
 5. 如需附件、Word/PDF 或原生发现，分别验证后记录客户端、模型、日期及局限。
 
-详见[行为测试](../maintainers/behavior-testing.md)。纯结构通过时，仅声明工具可运行，不声明模型表达或附件兼容已验收。
+详见[行为测试](https://fonghehe.github.io/career-resume-skill/maintainers/behavior-testing.html)。纯结构通过时，仅声明工具可运行，不声明模型表达或附件兼容已验收。

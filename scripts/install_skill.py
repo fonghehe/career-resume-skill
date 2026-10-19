@@ -5,7 +5,7 @@ import argparse
 from pathlib import Path
 import tempfile
 
-from bundle import public_entries
+from bundle import runtime_entries
 from package import export
 
 NAME = 'career-resume-skill'
@@ -59,14 +59,14 @@ def install(root, agent=None, *, project=None, skills_dir=None, output=None, dry
     if target.exists():
         raise ValueError(f'Destination already exists; existing files were preserved: {target}')
     # Never read local profiles, outputs, node_modules or Git history.
-    count = len(public_entries(root))
+    count = len(runtime_entries(root))
     if not dry_run:
         # A clean staging copy also allows a project-local install inside the source
         # workspace without relaxing the public export command's output boundary.
         with tempfile.TemporaryDirectory(prefix=NAME + '-install-') as temp:
             staging = Path(temp) / NAME
-            export(root, staging, directory=True)
-            export(staging, target, directory=directory)
+            export(root, staging, directory=True, runtime=True)
+            export(staging, target, directory=directory, runtime=True)
     return target, count
 
 

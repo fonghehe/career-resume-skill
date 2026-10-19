@@ -48,7 +48,7 @@
 
 ```sh
 # 交给生态安装器选择一个或多个智能体（另需 Node.js/npm 与网络）
-python3 scripts/package.py --public-dir local/dist/ecosystem/career-resume-skill
+python3 scripts/package.py --runtime --public-dir local/dist/ecosystem/career-resume-skill
 npx skills add ./local/dist/ecosystem/career-resume-skill --skill career-resume-skill --copy
 
 # 任意支持本地 Skill 的宿主：指定其实际技能父目录
@@ -109,7 +109,9 @@ python3 scripts/create_demo.py
 
 公共模板保持空白，示例明确标注虚构；个人材料集中在 `local/`，不提交到公开仓库。忽略规则不能清除已跟踪文件或历史。升级前备份完整 `local/`；结构化私人 ZIP 不包含全部原始附件与简历产物。
 
-需要开发教程站或维护公共工具时，再运行：
+Release / 市场 ZIP 只携带运行资源与用户教程，不含 `VERSION`、`.gitignore`、仓库维护配置和测试。首次初始化会生成工作副本的忽略规则；版本见下载文件名或市场记录。诊断、演示、安装和校验均可直接在解压目录运行。
+
+需要开发教程站或维护公共工具时，先获取完整源码，再运行：
 
 ```sh
 python3 scripts/check.py

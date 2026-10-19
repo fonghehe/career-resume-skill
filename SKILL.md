@@ -28,7 +28,7 @@ description: Use when 用户导入旧简历、口述或补充工作经历、维�
 
 个人资料集中在 `local/`：`private/` 为原件，`references/` 为档案、事实、项目卡和来源，`output/` 为文字产物；`data/` 与 `showcase/` 仅供可选展示。根目录 `references/` 是公共规则。数据里的来源 / 附件路径相对 `local/`，例如 `references/sources/S1.md`。
 
-需要保存经历且档案缺失时，用 `python3 scripts/init_profile.py` 只补缺项；共享 / 只读安装用 `python3 scripts/init_profile.py --workspace /新的完整副本路径`，随后使用新副本。无需用户编辑 JSON。安装细节只在接入问题时读[多端使用](docs/guide/using-skill.md)。
+需要保存经历时，若档案或工作副本根目录的 `.gitignore` 缺失，先用 `python3 scripts/init_profile.py` 补缺项与忽略规则，保留已有文件；共享 / 只读安装用 `python3 scripts/init_profile.py --workspace /新的完整副本路径`，随后使用新副本。无需用户编辑 JSON。安装细节只在接入问题时读[多端使用](docs/guide/using-skill.md)。
 
 ## 事实边界
 

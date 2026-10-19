@@ -1,6 +1,26 @@
 # 常见问题
 
-先运行 `python3 scripts/doctor.py` 查看公共资源与 Python / Git 状态；文档环境另用 `--docs`。该命令只检查环境，不会安装软件或读取个人档案正文。报告工具问题时可附脱敏的诊断输出。公共分发的完整自检是 `python3 scripts/check.py`，需要 Git，所有演示和测试产物都在临时目录。
+先运行 `python3 scripts/doctor.py` 查看运行包资源与 Python / Git 状态；再运行 `python3 scripts/init_profile.py` 补齐空档案和工作副本忽略规则，最后运行 `python3 scripts/validate.py`。诊断不安装软件、不读取个人档案正文；报告问题时只附脱敏输出。
+
+## 先按报错定位
+
+| 现象 / 报错 | 处理入口 |
+|---|---|
+| `Missing or invalid release file` / `Missing required file` | 见下方“运行包缺文件”，重新取得完整 ZIP，保留已有 `local/` |
+| `Destination already exists` / `Output already exists` | 见“安装后找不到技能”或“示例目录已存在”，改用新目标路径 |
+| `Refusing a symlink` | 使用没有符号链接的真实源目录和目标路径，保留原目录 |
+| 缺少 profile / facts / timeline | 见“缺少 profile、facts 或 timeline.json” |
+| 资料写到了旧目录 | 见“在别的目录执行脚本，却读到旧的资料” |
+| 项目卡、日期或生成内容过期 | 见下方对应英文报错与重建步骤 |
+| 附件读不到 / 没有 Word 或 PDF 工具 | 见“智能体没有读取上传的简历”；提供可读文字，先交付 Markdown |
+
+## 运行包缺文件，或找不到 check.py / release.py
+
+Release / 市场 ZIP 只携带日常运行资源，主动省略 `VERSION`、`.gitignore`、`AGENTS.md`、测试、CI、维护脚本与文档站构建配置。这些文件缺少是预期行为；版本见 ZIP 文件名或市场版本记录。`doctor.py` 和 `validate.py` 会按运行包检查必要脚本、空模板及完整虚构演示资源。
+
+若诊断报缺少模板、示例图片或运行脚本，先备份 `local/`，重新下载完整 ZIP 并解压到新目录，再诊断；不要靠创建同名空文件绕过检查。安装导出也必须使用完整运行包，不能只复制 `SKILL.md`。
+
+`check.py`、`check_public_index.py`、`release.py` 和 `pnpm docs:*` 用于维护源码，需从[源码仓库](https://github.com/fonghehe/career-resume-skill)获取完整工程。源码自检为 `python3 scripts/check.py`，另需 Git，在临时公共副本内执行；文档环境诊断用 `doctor.py --docs`。运行包用户无需执行这些维护命令。
 
 ## 安装后找不到技能
 
@@ -77,9 +97,9 @@ python3 scripts/validate.py
 
 文档站打不开时看终端的实际地址和端口。`docs:preview` 需要先执行 `docs:build`。个人 HTML 生成独立于 Node / VitePress，仍可单独运行 Python 工具。
 
-部署在子路径时资源 404，按[维护文档站](../maintainers/documentation.md)配置 `DOCS_BASE` 后重新构建。
+部署在子路径时资源 404，按[维护文档站](https://fonghehe.github.io/career-resume-skill/maintainers/documentation.html)配置 `DOCS_BASE` 后重新构建。
 
-GitHub Pages 首页直接返回 404 时，先确认仓库 **Settings → Pages → Source** 为 **GitHub Actions**，并检查 **Deploy documentation to Pages** 的 `build` 和 `deploy` 是否均成功。**Validate skill** 只检查构建，不发布站点；首次启用和部署排错见[文档站维护](../maintainers/documentation.md#首次启用-github-pages)。
+GitHub Pages 首页直接返回 404 时，先确认仓库 **Settings → Pages → Source** 为 **GitHub Actions**，并检查 **Deploy documentation to Pages** 的 `build` 和 `deploy` 是否均成功。**Validate skill** 只检查构建，不发布站点；首次启用和部署排错见[文档站维护](https://fonghehe.github.io/career-resume-skill/maintainers/documentation.html#首次启用-github-pages)。
 
 ## 要报告问题
 

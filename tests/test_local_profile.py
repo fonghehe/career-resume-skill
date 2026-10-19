@@ -39,7 +39,7 @@ class LocalProfileTests(unittest.TestCase):
         self.assertFalse((self.repo / 'local/data/timeline.json').exists())
         created, skipped = initialize(self.repo)
         self.assertGreater(created, 0)
-        self.assertEqual(skipped, 0)
+        self.assertEqual(skipped, 1)  # Preserve the clone's existing .gitignore.
         self.assertEqual(validate(self.repo)[0], [])
         build(self.repo)
         self.assertEqual(validate(self.repo)[0], [])
@@ -56,11 +56,14 @@ class LocalProfileTests(unittest.TestCase):
 
     def test_repeat_initialization_preserves_existing_personal_files(self):
         initialize(self.repo)
+        ignore = self.repo / '.gitignore'
+        ignore.write_text('# My existing ignore rules\n/local/\n')
         path = self.repo / 'local/references/profile.md'
         path.write_text('Private facts must survive upgrades')
         before = hashlib.sha256(path.read_bytes()).hexdigest()
         self.assertEqual(initialize(self.repo)[0], 0)
         self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), before)
+        self.assertEqual(ignore.read_text(), '# My existing ignore rules\n/local/\n')
 
     def test_default_updates_and_pages_stay_in_local_workspace(self):
         initialize(self.repo)

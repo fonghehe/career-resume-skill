@@ -7,7 +7,7 @@ import shutil
 import subprocess
 import sys
 
-from bundle import repository_entries, read_version
+from bundle import is_source_tree, repository_entries, read_version, runtime_entries
 from career_data import profile_root
 
 
@@ -30,9 +30,10 @@ def diagnose(root, *, docs=False):
     rows.append(('OK' if sys.version_info >= (3, 9) else 'ERROR',
                  'Python ' + sys.version.split()[0] + ' (requires 3.9+)'))
     try:
-        entries = repository_entries(root)
-        version = read_version(root)
-        rows.append(('OK', f'career-resume-skill {version}; complete public resources: {len(entries)} files'))
+        source_tree = is_source_tree(root)
+        entries = repository_entries(root) if source_tree else runtime_entries(root)
+        label = 'source ' + read_version(root) if source_tree else 'runtime Skill'
+        rows.append(('OK', f'career-resume-skill {label}; complete public resources: {len(entries)} files'))
     except (ValueError, OSError) as exc:
         rows.append(('ERROR', str(exc) + '; obtain the complete project directory'))
     git = probe('git')

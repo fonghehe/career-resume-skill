@@ -8,7 +8,7 @@ import shutil
 import tempfile
 import zipfile
 
-from bundle import personal_entries, public_entries
+from bundle import is_source_tree, personal_entries, public_entries, runtime_entries
 from validate import validate
 
 
@@ -19,7 +19,7 @@ def write_tree(entries, target):
         shutil.copyfile(source, path)
 
 
-def export(root, output, *, include_personal=False, directory=False, overwrite=False):
+def export(root, output, *, include_personal=False, directory=False, overwrite=False, runtime=None):
     root = Path(root).resolve()
     raw_output = Path(output).absolute()
     if raw_output.is_symlink():
@@ -35,7 +35,10 @@ def export(root, output, *, include_personal=False, directory=False, overwrite=F
         raise ValueError('Directory export never overwrites an existing directory')
     if output.exists() and (directory or not overwrite):
         raise ValueError(f'Output already exists: {output}')
-    entries = personal_entries(root) if include_personal else public_entries(root)
+    if runtime is None:
+        runtime = not directory or not is_source_tree(root)
+    entries = (personal_entries(root) if include_personal else
+               runtime_entries(root) if runtime else public_entries(root))
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='.career-resume-skill-', dir=output.parent) as temp:
         staging = Path(temp) / 'career-resume-skill'
@@ -71,16 +74,21 @@ def main():
     parser.add_argument('--overwrite', action='store_true', help='Replace a ZIP deliberately')
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument('--include-personal', action='store_true', help='Sensitive personal backup')
-    mode.add_argument('--public-dir', type=Path, help='Export public tree to a new directory')
+    mode.add_argument('--public-dir', type=Path, help='Export clean public tree to a new directory')
+    parser.add_argument('--runtime', action='store_true',
+                        help='Export only installable Skill resources (ZIP always uses this layout)')
     args = parser.parse_args()
     if args.public_dir and args.output:
         parser.error('--output is for ZIP mode; use --public-dir alone')
+    if args.runtime and args.include_personal:
+        parser.error('--runtime cannot be combined with --include-personal')
     root = Path(__file__).resolve().parent.parent
     filename = 'career-resume-skill-personal.zip' if args.include_personal else 'career-resume-skill-public.zip'
     output = args.public_dir or args.output or root / 'local/dist' / filename
     try:
         count = export(root, output, include_personal=args.include_personal,
-                       directory=bool(args.public_dir), overwrite=args.overwrite)
+                       directory=bool(args.public_dir), overwrite=args.overwrite,
+                       runtime=True if args.runtime else None)
     except (ValueError, OSError) as exc:
         parser.error(str(exc))
     kind = 'PERSONAL backup (contains candidate data)' if args.include_personal else 'PUBLIC starter'

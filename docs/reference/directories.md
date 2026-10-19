@@ -2,7 +2,9 @@
 
 下载或 clone 的目录名称可以自定，例如 `career-resume-skill/` 或 `my-career/`。Skill 名称保持 `career-resume-skill`；日常使用以你打开的完整工作副本为准。
 
-## 公共资源与私人工作区
+Release / 市场 ZIP 为运行布局，省略下图中的 `tests/`、`docs/maintainers/`、`docs/.vitepress/`、`.github/` 及其他仓库维护文件；根 README 为运行说明。脚本、模板、虚构示例及 `docs/guide/`、`docs/reference/` 保留。`init_profile.py` 会在使用时生成工作副本 `.gitignore`。
+
+## 公共资源与私人工作区（源码布局）
 
 ```text
 工作副本/

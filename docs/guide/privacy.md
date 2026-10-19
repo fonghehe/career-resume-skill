@@ -18,7 +18,9 @@
 
 PDF / Word 等附件以及 `.env` 也被忽略。纯文本简历应放在私人目录；放进公共教程的文字不会因为叫“简历”而自动排除。
 
-## 提交前实际检查
+Release / 市场包不携带 `.gitignore` 文件；使用前运行 `python3 scripts/init_profile.py`，从 `assets/starter/gitignore.template` 生成工作副本忽略规则，已有规则不覆盖。源码 clone 已有忽略规则。以下 Git 提交与文档站维护步骤仅适用于完整源码工程。
+
+## 提交前实际检查（源码）
 
 修改通用代码或教程后，在项目根目录执行：
 
@@ -57,7 +59,7 @@ python3 scripts/package.py
 python3 scripts/package.py --include-personal
 ```
 
-第一个默认生成空模板公开包；第二个生成私人备份。二者文件名不同，私人包不能上传作为 Release。
+第一个默认生成精简运行公开包，省略版本文件、Git 忽略文件和维护资源；第二个生成私人备份。二者文件名不同，私人包不能上传作为 Release。
 
 私人包只包含脚本选定目录中的 Markdown、JSON 和 HTML；不包含 `local/private/` 原始附件、`local/output/` 生成简历及任意新增文件。升级前还需单独备份这些目录，不能将结构化 ZIP 当成完整目录备份。
 

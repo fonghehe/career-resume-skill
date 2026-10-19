@@ -14,10 +14,8 @@ def initialize(root):
     pending = []
     skipped = 0
     for rel in STARTER_FILES:
-        if rel == '.gitignore':
-            continue
         source = checked_file(root, starter_source(rel))
-        target = profile / rel.removeprefix('local/')
+        target = root / rel if rel == '.gitignore' else profile / rel.removeprefix('local/')
         for path in (target, *target.parents):
             if path == root:
                 break
@@ -47,6 +45,8 @@ def main():
             # Reuse the public boundary rather than copying an installed user's data.
             from package import export
             count = export(args.root, args.workspace, directory=True)
+            created, _ = initialize(args.workspace)
+            count += created
             print(f'Created clean workspace: {args.workspace.resolve()} ({count} files).')
             print('Use this workspace for career data; the source installation was preserved.')
             return

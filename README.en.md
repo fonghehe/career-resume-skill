@@ -29,7 +29,7 @@ The shared entry uses the Agent Skills format. Use the ecosystem installer to se
 
 ```sh
 # Ecosystem installer: select one or more agents (requires Node.js/npm and network)
-python3 scripts/package.py --public-dir local/dist/ecosystem/career-resume-skill
+python3 scripts/package.py --runtime --public-dir local/dist/ecosystem/career-resume-skill
 npx skills add ./local/dist/ecosystem/career-resume-skill --skill career-resume-skill --copy
 
 # Any host with a local skill directory
@@ -74,6 +74,8 @@ python3 scripts/create_demo.py
 Open `local/output/demo/showcase/project-timeline.html`. Existing output is preserved; choose a new `--output` directory when needed.
 
 ## Data and maintenance
+
+Release and marketplace ZIPs contain runtime resources and user guides. Repository version files, Git ignores, CI, tests and site build configuration are omitted. Initialization creates workspace ignore rules without replacing existing ones. For the maintenance commands below, obtain the full source repository.
 
 Personal files and generated records use ignored directories. Keep `assets/starter/` empty. Git ignores do not remove tracked files or history. Commit dates and counts describe code activity, not employment, launch dates, grade or independent impact.
 

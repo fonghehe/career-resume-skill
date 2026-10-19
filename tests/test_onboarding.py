@@ -22,7 +22,7 @@ from validate import validate
 class OnboardingTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
-        self.base = Path(self.temp.name)
+        self.base = Path(self.temp.name).resolve()
         self.source = self.base / 'installation'
         export(ROOT, self.source, directory=True)
 
@@ -93,7 +93,13 @@ class OnboardingTests(unittest.TestCase):
         self.assertEqual(name, archive.name)
         self.assertEqual(digest, hashlib.sha256(archive.read_bytes()).hexdigest())
         with zipfile.ZipFile(archive) as bundle:
-            self.assertEqual(bundle.read('career-resume-skill/VERSION').decode().strip(), version)
+            names = [path.removeprefix('career-resume-skill/') for path in bundle.namelist()]
+            for excluded in ('VERSION', '.gitignore', 'AGENTS.md', 'package.json',
+                             'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'scripts/release.py',
+                             'scripts/check.py', 'scripts/check_public_index.py'):
+                self.assertNotIn(excluded, names)
+            self.assertFalse(any(path.startswith(('.github/', 'tests/', 'docs/maintainers/',
+                                                 'docs/.vitepress/')) for path in names))
             self.assertFalse(any(sentinel.encode() in bundle.read(path)
                                  for path in bundle.namelist()))
             data = json.loads(bundle.read('career-resume-skill/local/data/timeline.json'))
@@ -102,6 +108,43 @@ class OnboardingTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             build_release(self.source)
         self.assertEqual(archive.read_bytes(), before)
+
+    def test_extracted_release_runs_without_repository_files(self):
+        output = build_release(self.source)
+        with zipfile.ZipFile(next(output.glob('*.zip'))) as archive:
+            archive.extractall(self.base / 'extracted')
+        skill = self.base / 'extracted/career-resume-skill'
+        self.assertFalse((skill / '.gitignore').exists())
+        original_profile = (skill / 'local/references/profile.md').read_bytes()
+        # Every command uses modules from the actual unpacked bundle, not this checkout.
+        workspace = self.base / 'private-workspace'
+        installed = self.base / 'other-host'
+        for args in (
+            ('doctor.py',), ('init_profile.py',), ('validate.py',), ('create_demo.py',),
+            ('build_career.py',), ('build_timeline.py',), ('validate.py',),
+            ('init_profile.py', '--workspace', str(workspace)),
+            ('install_skill.py', '--skills-dir', str(installed)),
+            ('package.py', '--output', str(self.base / 'repacked.zip')),
+        ):
+            with self.subTest(command=args):
+                result = subprocess.run([sys.executable, '-B', str(skill / 'scripts' / args[0]),
+                                         *args[1:]], cwd=self.base, capture_output=True, text=True)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertTrue((skill / 'local/output/demo/showcase/project-timeline.html').is_file())
+        self.assertTrue((skill / '.gitignore').is_file())
+        self.assertEqual((skill / 'local/references/profile.md').read_bytes(), original_profile)
+        self.assertEqual(validate(workspace)[0], [])
+        self.assertEqual(validate(installed / 'career-resume-skill')[0], [])
+        self.assertTrue((workspace / '.gitignore').is_file())
+        subprocess.run(['git', 'init', '-q', str(workspace)], check=True)
+        ignored = subprocess.run(['git', '-C', str(workspace), 'check-ignore', 'local/references/profile.md'],
+                                 capture_output=True, text=True)
+        self.assertEqual(ignored.returncode, 0, ignored.stderr)
+        (skill / 'assets/examples/career-demo/references/attachments/demo-phases.png').unlink()
+        broken = subprocess.run([sys.executable, '-B', str(skill / 'scripts/doctor.py')],
+                                capture_output=True, text=True)
+        self.assertNotEqual(broken.returncode, 0)
+        self.assertIn('demo-phases.png', broken.stdout)
 
     def test_invalid_release_version_cannot_create_artifacts(self):
         output = self.base / 'release'

@@ -9,7 +9,8 @@ import re
 import sys
 from urllib.parse import unquote, urlsplit
 
-from bundle import PUBLIC_FILES, STARTER_FILES, read_version
+from bundle import (PUBLIC_FILES, RUNTIME_FILES, STARTER_FILES, is_source_tree,
+                    read_version, starter_source)
 from career_data import profile_root
 
 IGNORED = {'dist', 'output', '.git', '__pycache__', 'node_modules',
@@ -31,11 +32,15 @@ def validate(root):
         profile = profile_root(root)
     except ValueError as exc:
         return [str(exc)], 0
-    required = PUBLIC_FILES
+    source_tree = is_source_tree(root)
+    required = PUBLIC_FILES if source_tree else RUNTIME_FILES
+    required = (*required, *(starter_source(rel) for rel in STARTER_FILES))
     for rel in required:
         if not (root / rel).is_file():
             errors.append(f'Missing required file: {rel}')
     for rel in STARTER_FILES:
+        if rel == '.gitignore' and not source_tree:
+            continue
         path = root / rel if rel == '.gitignore' else profile / rel.removeprefix('local/')
         if not path.is_file():
             errors.append(f'Missing required file: {rel}')
