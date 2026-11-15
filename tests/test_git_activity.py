@@ -8,11 +8,13 @@ import shutil
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
-from import_git_activity import collect, collect_folder, write_report
-from career_data import summarize_repositories
-from build_timeline import validate_data
+from career_resume.import_git_activity import bounded_git, collect, collect_folder, git, write_report
+from career_resume.cli_support import CliError
+from career_resume.career_data import summarize_repositories
+from career_resume.build_timeline import validate_data
 
 
 class GitActivityTests(unittest.TestCase):
@@ -91,7 +93,7 @@ class GitActivityTests(unittest.TestCase):
         self.assertEqual(summaries[0]['end'], '2025-01-31T20:00:00-05:00')
         self.assertEqual(summaries[0]['activity']['monthly'], {'2025-01': 1, '2025-02': 1})
         data = json.loads((Path(__file__).resolve().parents[1] /
-                           'assets/examples/career-demo/data/timeline.json').read_text())
+                           'examples/career-demo/data/timeline.json').read_text())
         data['repositories'] = summaries
         data['gitEvents'] = report['timelineEvents']
         validate_data(data)
@@ -146,6 +148,63 @@ class GitActivityTests(unittest.TestCase):
         self.assertEqual(collect_folder(empty, ['alice@example.test'])['reports'], [])
         with self.assertRaises(ValueError):
             collect_folder(empty, [])
+
+    def test_git_timeout_hides_raw_command_and_partial_stdout(self):
+        failure = subprocess.TimeoutExpired(['git', 'PRIVATE_PATH'], 60,
+                                            output='PRIVATE_SUBJECT', stderr='PRIVATE_EMAIL')
+        with patch('career_resume.import_git_activity.subprocess.run', side_effect=failure):
+            with self.assertRaises(CliError) as result:
+                git(self.repo, 'log')
+        self.assertEqual(result.exception.code, 1007)
+        self.assertNotIn('PRIVATE_', str(result.exception))
+
+    def run_evidence_process(self, code, **kwargs):
+        original = subprocess.Popen
+        children = []
+
+        def spawn(*args, **options):
+            child = original([sys.executable, '-c', code], **options)
+            children.append(child)
+            return child
+
+        with patch('career_resume.import_git_activity.subprocess.Popen', side_effect=spawn):
+            try:
+                return bounded_git(self.repo, 'show', **kwargs)
+            finally:
+                self.assertTrue(children)
+                self.assertIsNotNone(children[0].poll(), 'evidence child was not reaped')
+
+    def test_evidence_deadline_interrupts_blocking_read_and_reaps_child(self):
+        with self.assertRaises(CliError) as result:
+            self.run_evidence_process('import time; time.sleep(10)', timeout=0.1)
+        self.assertEqual(result.exception.code, 1007)
+
+    def test_large_evidence_is_truncated_without_waiting_for_eof(self):
+        report = self.run_evidence_process(
+            'import sys,time; sys.stdout.buffer.write(b"X" * 100000); sys.stdout.flush(); time.sleep(10)',
+            limit=1024, timeout=5)
+        self.assertEqual(report, {'text': 'X' * 1024, 'truncated': True})
+
+    def test_folder_timeout_preserves_healthy_reports_and_repository_state(self):
+        self.commit('alice@example.test', '2025-01-01T10:00:00+08:00',
+                    '2025-01-02T10:00:00+08:00', 'fictional activity')
+        slow = self.base / 'slow'
+        shutil.copytree(self.repo, slow)
+        original = collect
+
+        def collect_or_timeout(repo, *args, **kwargs):
+            if repo.resolve() == slow.resolve():
+                raise CliError(1007, 'Git read timed out')
+            return original(repo, *args, **kwargs)
+
+        head = self.command('rev-parse', 'HEAD')
+        with patch('career_resume.import_git_activity.collect', side_effect=collect_or_timeout):
+            report = collect_folder(self.base, ['alice@example.test'])
+        self.assertEqual(len(report['reports']), 1)
+        self.assertEqual(report['skipped'][0]['relativePath'], 'slow')
+        self.assertEqual(report['skipped'][0]['errorCode'], 1007)
+        self.assertEqual(self.command('rev-parse', 'HEAD'), head)
+        self.assertEqual(self.command('status', '--porcelain'), '')
 
 
 if __name__ == '__main__':

@@ -2,16 +2,20 @@
 
 用户仍只需提供材料、项目目录及自然语言补充，不要求填写本文件里的结构。
 
+## 网页直接编辑
+
+用户希望减少 Agent 交互时，按[工作台教程](../docs/guide/workbench.md)运行本地服务。当前字段块、事实确认与展示标记遵循[事实约定](fact-contract.md)。原文编辑与表单编辑同一文件需分次保存。
+
 ## 展示数据更新：保留已确认事实
 
 本节只在用户请求网页、维护已有网页或合并 Git 展示数据时读取。仅补充文字履历时，按 [career-workflow.md](career-workflow.md) 更新 Markdown 源记录并重建文字履历即可，无需生成 delta、展示 JSON 或网页。
 
-需要同步展示时，先维护源记录，再生成只包含新增或变化字段的 delta JSON。使用 `python3 scripts/update_profile.py --delta 文件` 预览，随后加 `--apply` 写入并重建页面。已有库不能重新初始化或整份覆盖。
+需要同步展示时，先维护源记录，再生成只包含新增或变化字段的 delta JSON。使用 `python3 scripts/career.py update --delta 文件` 预览，随后加 `--apply` 写入并重建页面。已有库不能重新初始化或整份覆盖。
 
 - `confirmedFields` 指定已确认字段；`sources` 中 `status: confirmed` 的 `field` 同样锁定。`status: confirmed` 的项目会保护现有事实字段。
 - 新阶段可以追加，但不能改写已有确认阶段。新材料与已确认字段冲突时保留旧值，把冲突交给用户。仅用户明确纠正的字段才能通过 `--confirmed-correction projects/P01.summary` 更新；不把“更新最近记录”当作更正授权。
 - 来源和确认字段追加；项目、任职按稳定 ID 合并；Git 以仓库名 + SHA 去重，原始日期与主题不能改写。
-- 工具会在私人资料目录的 `output/updates/`（新布局为 `local/output/updates/`）保存更新前的数据与差异。更新源记录后用 `scripts/build_career.py` 重建文字履历；最后报告新增、变化和冲突。无变化不重复保存。
+- 工具会在私人资料目录的 `output/updates/`（新布局为 `local/output/updates/`）保存更新前的数据与差异。更新源记录后用 `scripts/career.py build` 重建文字履历；最后报告新增、变化和冲突。无变化不重复保存。
 - `--undo 更新ID --apply` 恢复数据并重建页面；已有后续修改时拒绝，避免抹去新资料。这个撤回针对 timeline 数据，不包括原始附件或另行修改的 Markdown。维护项目卡时保留已确认文字，另存原文再改。
 - 所有缺失来源、附件或项目卡先解决再应用；不要拿删除旧资料解决结构错误。
 
@@ -19,7 +23,7 @@ Git 报告可以用 `--git-report 报告文件` 直接合并，复用库里已�
 
 ## Git：归属与阶段
 
-`import_git_activity.py` 仍只读取本地 refs 和本人邮箱。默认采集最近 200 条本人提交的变更文件（`--details-limit` 可调，最多 2000）；所有本人提交参与总数与月份统计。记录文件证据覆盖范围，旧提交没有文件细节不等于没有修改。
+`career.py git` 仍只读取本地 refs 和本人邮箱。默认采集最近 200 条本人提交的变更文件（`--details-limit` 可调，最多 2000）；所有本人提交参与总数与月份统计。记录文件证据覆盖范围，旧提交没有文件细节不等于没有修改。
 
 智能体将用户确认的目录归属写入 `--mapping` 文件：
 
@@ -45,6 +49,6 @@ Git 报告可以用 `--git-report 报告文件` 直接合并，复用库里已�
 
 页面的“下载当前范围分享页”生成当前公司 / 年份范围的独立 HTML，提供下载链接和可展开预览；默认去掉来源、原始 Markdown、真实仓库名称、邮箱、SHA、本地路径与 Commit 明细。默认公司匿名；用户可勾选保留公司名和已检查的附件。
 
-智能体也可以用 `scripts/export_share.py --project P01 --project P02`，`--workspace` 指定库。仅在用户选定范围后生成，原件不变、不自动上传。`--keep-company-names` 和 `--include-attachments` 按用户选择启用；未完整采集的共享仓库无法准确统计子集时拒绝导出，不凑数。
+智能体也可以用 `scripts/career.py share --project P01 --project P02`，`--workspace` 指定库。仅在用户选定范围后生成，原件不变、不自动上传。`--keep-company-names` 和 `--include-attachments` 按用户选择启用；未完整采集的共享仓库无法准确统计子集时拒绝导出，不凑数。
 
 白名单导出不会识别自由文本和图片里所有秘密。项目名称、职责、阶段、技术栈、任职摘要仍会保留，分享前向用户展示这些内容，敏感文字先在分享副本脱敏，私人原件不改。图片和 PDF 需检查后再包含。分享版不是原始材料备份。

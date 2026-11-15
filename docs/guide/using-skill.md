@@ -4,13 +4,7 @@
 
 ## 先准备个人工作副本
 
-下载或 clone 完整项目。自己的副本可以直接使用；若拿到的是共享或只读安装，用下面的命令创建新副本：
-
-```sh
-python3 /实际安装路径/career-resume-skill/scripts/init_profile.py --workspace /实际路径/my-career
-```
-
-目标目录必须不存在；命令只复制公共内容与空模板。以后在智能体中打开 `/实际路径/my-career`，资料写入它的 `local/`。所有脚本也从该副本运行，因为脚本默认读写自身所在目录，单独切换终端 cwd 不会切换资料库。
+先按[快速开始的目录选择](quick-start.md#怎么选目录)确定个人工作副本，已有资料继续复用。本页的安装命令只负责把公共 Skill 放进宿主发现目录，不负责迁移履历；运行时让智能体指向选定的工作副本。
 
 下文 Python 安装命令在完整项目目录执行，使用 Python 3.9+ 标准库；Windows 可把 `python3` 换成 `py -3`。生态安装器另需 Node.js/npm 与网络，基础文件读取和 Python 安装不需要它。Skill 本身不要求 API Key 或 MCP 服务。
 
@@ -19,11 +13,11 @@ python3 /实际安装路径/career-resume-skill/scripts/init_profile.py --worksp
 | 接入能力 | 使用方式 | 新客户端怎么接入 |
 |---|---|---|
 | 生态安装器已支持 | 从干净公开副本运行 `npx skills add`，选择一个或多个智能体 | 使用安装器维护的客户端列表与路径 |
-| 支持项目 `.agents/skills/` | `install_skill.py --project 工作副本` | 确认客户端支持并启用目录发现 |
-| 支持其他本地技能目录 | `install_skill.py --skills-dir 技能父目录` | 指定客户端实际目录，不需要注册客户端名称 |
-| 支持 ZIP 导入 | `install_skill.py --output 新的.zip` | 在客户端导入；核对包结构与平台元信息要求 |
+| 支持项目 `.agents/skills/` | `career.py install --project 工作副本` | 确认客户端支持并启用目录发现 |
+| 支持其他本地技能目录 | `career.py install --skills-dir 技能父目录` | 指定客户端实际目录，不需要注册客户端名称 |
+| 支持 ZIP 导入 | `career.py install --output 新的.zip` | 在客户端导入；核对包结构与平台元信息要求 |
 | 能读取文件但无原生 Skill | 明确读取工作副本的 `SKILL.md` | 用项目规则、快捷指令或会话提示指向同一入口 |
-| 自建 / 云端智能体 | 将公开包放入可访问的沙箱或资源服务 | 按元信息发现、按需读取规则与资源，见[集成说明](../reference/compatibility.md#自建与云端智能体) |
+| 自建 / 云端智能体 | 将公开包放入可访问的沙箱或资源服务 | 按元信息发现、按需读取规则与资源，见[集成说明](using-skill.md#自建与云端智能体) |
 
 格式一致不代表所有客户端都扫描同一目录，也不代表它们都有文件写入、Python、附件解析或文档导出能力。[Agent Skills 规范](https://agentskills.io/specification)描述可复用格式，具体发现与执行由宿主实现。
 
@@ -32,7 +26,7 @@ python3 /实际安装路径/career-resume-skill/scripts/init_profile.py --worksp
 先导出空白公开副本，再交给安装器；不直接从含真实履历的工作副本安装。
 
 ```sh
-python3 scripts/package.py --runtime --public-dir local/dist/ecosystem/career-resume-skill
+python3 scripts/career.py package --runtime --public-dir local/dist/ecosystem/career-resume-skill
 npx skills add ./local/dist/ecosystem/career-resume-skill --skill career-resume-skill --copy
 ```
 
@@ -45,7 +39,7 @@ npx skills add ./local/dist/ecosystem/career-resume-skill --skill career-resume-
 ### 通用目录：不限制智能体名称
 
 ```sh
-python3 scripts/install_skill.py --skills-dir /实际客户端的技能目录
+python3 scripts/career.py install --skills-dir /实际客户端的技能目录
 ```
 
 脚本会创建 `技能目录/career-resume-skill/`，保留完整资源，只复制公共内容。无需 `--agent`；即使客户端刚发布或尚未被安装器收录，也可以按其正式说明接入。不要猜目录位置。
@@ -53,7 +47,7 @@ python3 scripts/install_skill.py --skills-dir /实际客户端的技能目录
 支持 `.agents/skills/` 的项目宿主可用：
 
 ```sh
-python3 scripts/install_skill.py --project /实际路径/my-career
+python3 scripts/career.py install --project /实际路径/my-career
 ```
 
 该命令创建项目的 `.agents/skills/career-resume-skill/`；`--agent universal` 是相同的快捷方式。它不假设存在对所有宿主通用的全局技能目录。
@@ -61,7 +55,7 @@ python3 scripts/install_skill.py --project /实际路径/my-career
 ### 通用 ZIP
 
 ```sh
-python3 scripts/install_skill.py --output local/dist/career-resume-skill-import.zip
+python3 scripts/career.py install --output local/dist/career-resume-skill-import.zip
 ```
 
 压缩包只有一个 `career-resume-skill/` 顶层目录，下面包含 `SKILL.md` 及完整资源。适合接收该结构的客户端；要求 ZIP 根层直接放 `SKILL.md` 或额外平台字段时，应按目标官方说明重新组织公开副本，而不是只上传入口、漏掉模板与工具。平台市场上架和云端资源挂载需另行配置。
@@ -82,13 +76,13 @@ python3 scripts/install_skill.py --output local/dist/career-resume-skill-import.
 跨项目使用，安装到 `~/.agents/skills/career-resume-skill/`：
 
 ```sh
-python3 scripts/install_skill.py --agent codex
+python3 scripts/career.py install --agent codex
 ```
 
 只在自己的履历工作副本中使用：
 
 ```sh
-python3 scripts/install_skill.py --agent codex --project /实际路径/my-career
+python3 scripts/career.py install --agent codex --project /实际路径/my-career
 ```
 
 项目入口位于 `.agents/skills/career-resume-skill/SKILL.md`。打开工作副本，在 Skill 列表选择技能；CLI / IDE 可用 `/skills` 或 `$career-resume-skill`。未显示时刷新或重启客户端。发现位置与调用方式见 [OpenAI 官方说明](https://learn.chatgpt.com/docs/build-skills)。
@@ -105,7 +99,7 @@ python3 scripts/install_skill.py --agent codex --project /实际路径/my-career
 跨项目入口在 `~/.claude/skills/career-resume-skill/`：
 
 ```sh
-python3 scripts/install_skill.py --agent claude
+python3 scripts/career.py install --agent claude
 ```
 
 仅当前工作副本使用时，加 `--project /实际路径/my-career`，会安装到该目录的 `.claude/skills/`。然后在 Claude Code 中打开工作副本并调用：
@@ -121,7 +115,7 @@ python3 scripts/install_skill.py --agent claude
 生成可上传的公开包：
 
 ```sh
-python3 scripts/install_skill.py --agent workbuddy
+python3 scripts/career.py install --agent workbuddy
 ```
 
 默认产物是 `local/dist/career-resume-skill-workbuddy.zip`，也可用 `--output /实际路径/import.zip` 指定新文件。打开 WorkBuddy 的技能页，选择“添加技能 → 上传技能”，导入 ZIP 并启用。操作依据见 [WorkBuddy 官方技能说明](https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market)。界面入口以当前版本为准。
@@ -141,7 +135,7 @@ ZIP 中有完整公共资源和空模板，不包含你的真实履历。这是�
 推荐项目安装，避免不同地区版本的全局路径差异：
 
 ```sh
-python3 scripts/install_skill.py --agent trae --project /实际路径/my-career
+python3 scripts/career.py install --agent trae --project /实际路径/my-career
 ```
 
 入口在工作副本的 `.trae/skills/career-resume-skill/SKILL.md`。打开该副本，前往“设置 → 技能与命令”，检查技能已启用，再发送与 WorkBuddy 相同的自然语言提示词。也可以在界面导入包含完整资源的 ZIP。
@@ -151,7 +145,7 @@ python3 scripts/install_skill.py --agent trae --project /实际路径/my-career
 全局安装可显式指定客户端显示的技能目录，例如国内版的 `~/.trae-cn/skills/`：
 
 ```sh
-python3 scripts/install_skill.py --agent trae --skills-dir ~/.trae-cn/skills
+python3 scripts/career.py install --agent trae --skills-dir ~/.trae-cn/skills
 ```
 
 ## 安装、预览与升级
@@ -161,12 +155,12 @@ python3 scripts/install_skill.py --agent trae --skills-dir ~/.trae-cn/skills
 先看目标位置，再执行安装：
 
 ```sh
-python3 scripts/install_skill.py --agent codex --project /实际路径/my-career --dry-run
+python3 scripts/career.py install --agent codex --project /实际路径/my-career --dry-run
 ```
 
 `--skills-dir` 指定的是父目录，脚本会自动追加 `career-resume-skill/`。同一客户端避免重复安装同名技能。升级前备份个人工作副本的 `local/`，检查旧安装中是否有自己的改动；保留旧安装或移走后再安装新版本。脚本不自动删除、合并或迁移既有资料。
 
-旧名安装升级后使用 `career-resume-skill`；已有个人工作副本继续使用，不需要重建经历。
+旧名安装升级后使用 `career-resume-skill`；已有个人工作副本继续使用，不需要重建经历。完整的分场景更新步骤（工作副本迁移、客户端替换、ZIP / 市场更新、Git 源码副本）见[更新到新版本](upgrade-skill.md)。
 
 ## 通用文件读取入口
 
@@ -185,4 +179,12 @@ python3 scripts/install_skill.py --agent codex --project /实际路径/my-career
 
 然后发送“根据最新履历生成前端方向的通用简历，交付正文和独立依据报告”，确认产物在工作副本的 `local/output/resumes/`。不能读取的附件需提供可读文字，不猜测内容。
 
-下一步：[生成第一份履历](first-library.md) · [根据履历生成简历](generate-resume.md) · [兼容与验收边界](../reference/compatibility.md)。
+下一步：[生成第一份履历](first-library.md) · [根据履历生成简历](generate-resume.md) · [更新到新版本](upgrade-skill.md) · [兼容与验收边界](using-skill.md)。
+
+## 自建与云端智能体
+
+把公共运行包放入宿主可读的沙箱或资源服务，先提供 Skill 的名称、描述和入口位置；选中后读取 `SKILL.md`，只加载当前任务需要的规则、模板和工具。运行时明确指定个人工作副本，避免多用户共享同一资料目录。没有写文件或终端能力时，可以按流程交付文本，但不能声称文件已保存或脚本已运行。
+
+## 兼容与验收边界
+
+Python 工具使用标准库，Git 采集另需 Git；附件提取、模型写作、文件权限和 Skill 自动发现由宿主提供。Word 导出只需 Python，PDF 转换另需本机 LibreOffice。格式兼容不等于每个客户端已验收。用虚构资料分别检查入口发现、来源状态、文件落盘、附件及导出；完整测试方法见[行为验收](https://fonghehe.github.io/career-resume-skill/maintainers/behavior-testing.html)。

@@ -12,12 +12,13 @@
 | `references/` | 公共工作流程，按需加载 |
 | `assets/starter/` | 空白私人资料模板 |
 | `assets/templates/` | 履历、项目卡、简历与报告的内容模板 |
-| `assets/examples/` | 明确标注虚构的公共教学示例 |
-| `scripts/`、`tests/` | Python 工具、确定性测试与行为场景 |
+| `examples/` | 明确标注虚构的公共教学示例 |
+| `scripts/career.py`、`scripts/career_resume/` | 日常统一入口与内部实现 |
+| `tools/`、`tests/` | 源码检查、发布、站点示例构建与测试场景 |
 | `docs/`、`agents/` | VitePress 教程站、公共宿主展示配置 |
 | `local/` | 当前使用者的私人资料与产物，Git 忽略 |
 
-Python 工具使用 Python 3.9+ 标准库，Git 统计另需系统 Git。文档站使用 Node.js 22+、项目锁定的 pnpm 和 VitePress；依赖版本以 `package.json` 和锁文件为准。
+Python 工具使用 Python 3.9+ 标准库，Git 统计另需系统 Git。文档站使用 Node.js 24.x、项目锁定的 pnpm 和 VitePress；依赖版本以 `package.json` 和锁文件为准。
 
 ## 开始工作
 
@@ -37,7 +38,7 @@ Python 工具使用 Python 3.9+ 标准库，Git 统计另需系统 Git。文档�
 
 ## 公共资源与本地产物
 
-- 新增公共文件须登记到 `scripts/bundle.py` 的受控清单；公开导出使用项目打包工具，不直接复制整个工作副本。
+- 新增公共文件须登记到 `scripts/career_resume/bundle.py` 的受控清单；公开导出使用项目打包工具，不直接复制整个工作副本。
 - 本地 Agent 说明、规划、评估运行记录、缓存和生成产物加入 `.gitignore`，同步 `assets/starter/gitignore.template`。
 - 需要取消跟踪时只从 Git 索引移除，保留本地文件。不要把生成记录重新加入公共打包清单。
 - Git 忽略不阻止站点构建。本地文档若保留在 `docs/`，还须在 `docs/.vitepress/config.mts` 的 `srcExclude` 中排除，并检查构建目录。
@@ -48,17 +49,19 @@ Python 工具使用 Python 3.9+ 标准库，Git 统计另需系统 Git。文档�
 
 | 改动 | 验证方式 |
 |---|---|
-| Python、模板、公共规则或打包资源 | `python3 -B scripts/check.py`，在临时公共副本执行测试、演示与校验 |
+| Python、模板、公共规则或打包资源 | `python3 -B tools/check.py`，在临时公共副本执行测试、演示与校验 |
 | Skill 执行行为 | 复用 `tests/scenarios.md`、`tests/evals.json` 与 `docs/maintainers/behavior-testing.md`，在隔离副本检查实际文件、事实状态及来源 |
 | 文档站 | `pnpm docs:build`；依赖缺失时用 `pnpm install --frozen-lockfile`，不随意更新锁文件 |
 | Git 忽略规则 | `git check-ignore --no-index -v 路径`，同时确认公共入口与模板仍可跟踪 |
-| 准备提交的公共内容 | `python3 -B scripts/check_public_index.py` 和 `git diff --cached --check` |
+| 准备提交的公共内容 | `python3 -B tools/check_public_index.py` 和 `git diff --cached --check` |
 
 若 pnpm 的运行前依赖检查因本地环境尝试重装，确认现有依赖可用后可用 `pnpm --config.verify-deps-before-run=false docs:build`，说明实际命令，不持久化关闭检查。
 
 不为公共维护运行会读取私人资料的 `--local` 检查。工具测试不证明模型行为、外部事实、隐式触发准确率或 Word / PDF 排版；未完成和未运行的检查分别记录，不补造统计。
 
 ## Git 与交付
+
+每次准备发布包，先由用户明确选择本次完整版本号；用户未给出时先询问，不代选或自动递增。终端打包默认交互询问；`--version` 只用于用户已明确选择的版本或从已验证标签取值的发布 CI；普通 CI 可使用明确的虚构测试版本。
 
 未经用户明确要求，不提交、推送、发布、上传或投递。暂存时明确指定本次公共文件，检查差异和私人资料边界。
 

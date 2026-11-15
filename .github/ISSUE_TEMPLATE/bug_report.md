@@ -14,7 +14,7 @@ labels: bug
 - 提交 / 版本：
 - 智能体客户端（若相关）：
 - 命令与错误：
-- `python3 scripts/doctor.py` 输出（文档问题附 `--docs`；请先脱敏）：
+- `python3 scripts/career.py doctor` 输出（文档问题附 `--docs`；请先脱敏）：
 - 资料工作目录与安装目录是否相同（无需提供真实路径）：
 
 请勿上传真实简历、联系方式、企业资料或个人包；敏感问题按 .github/SECURITY.md 私密报告。

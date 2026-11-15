@@ -22,6 +22,10 @@
 
 `references/` 是事实、项目卡、来源与个人写作设置；事实修改先保存在这里。`data/` 是可选网页展示摘要。`output/` 与 `showcase/` 是生成产物，不能把精修措辞反向当作新证据。
 
-从完整工作副本根目录执行 `python3 scripts/build_career.py` 重建文字履历，执行 `python3 scripts/validate.py` 检查结构。重复初始化只补缺失文件；已有资料不被空模板覆盖。
+从完整工作副本根目录执行 `python3 scripts/career.py build` 重建文字履历，执行 `python3 scripts/career.py validate` 检查结构。重复初始化只补缺失文件；已有资料不被空模板覆盖。
 
 原始附件、事实和产物默认不提交 Git。升级前备份整个本目录；结构化私人 ZIP 不包含全部附件与简历产物。
+
+## 工具入口
+
+在完整工作副本根目录运行 `python3 scripts/career.py --help`。`init` 补缺项，`build` 重建文字履历，`web` 生成离线网页，`workbench` 打开网页编辑器，`validate` 校验结构。已有中英文正文用 `export 实际路径.md` 导出 Word，加 `--format all` 同时导出 PDF（需要本机 LibreOffice）。`resume.en.md` 自动采用国际版式，已有导出文件不覆盖。

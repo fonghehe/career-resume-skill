@@ -8,7 +8,7 @@
 |---|---|
 | `assets/starter/` | 提交空模板；不能填个人信息 |
 | `SKILL.md`、`scripts/`、`docs/` | 提交通用规则、工具和教程 |
-| `assets/examples/` | 提交明确标注的虚构材料 |
+| `examples/` | 提交明确标注的虚构材料 |
 | `references/` | 提交公共 Skill 规则；不填个人经历 |
 | `local/` | 个人事实、来源、附件、网页、采集报告和备份统一存放，忽略 |
 | 旧 `data/`、`showcase/`、`output/`、`private/`、`dist/` | 保留兼容忽略；新产物使用 `local/` |
@@ -18,7 +18,7 @@
 
 PDF / Word 等附件以及 `.env` 也被忽略。纯文本简历应放在私人目录；放进公共教程的文字不会因为叫“简历”而自动排除。
 
-Release / 市场包不携带 `.gitignore` 文件；使用前运行 `python3 scripts/init_profile.py`，从 `assets/starter/gitignore.template` 生成工作副本忽略规则，已有规则不覆盖。源码 clone 已有忽略规则。以下 Git 提交与文档站维护步骤仅适用于完整源码工程。
+Release / 市场包不携带 `.gitignore` 文件；使用前运行 `python3 scripts/career.py init`，从包内 `assets/starter/gitignore.txt` 生成工作副本忽略规则，已有规则不覆盖。源码中仍使用 `assets/starter/gitignore.template`，clone 已有忽略规则。以下 Git 提交与文档站维护步骤仅适用于完整源码工程。
 
 ## 提交前实际检查（源码）
 
@@ -27,7 +27,7 @@ Release / 市场包不携带 `.gitignore` 文件；使用前运行 `python3 scri
 ```sh
 git status --short
 git add .
-python3 scripts/check_public_index.py
+python3 tools/check_public_index.py
 git diff --cached --stat
 git diff --cached
 ```
@@ -40,7 +40,7 @@ git diff --cached
 git commit -m "docs: explain career knowledge base workflow"
 ```
 
-不要用 `git add -f` 强制提交被忽略的档案。新增公开文件时，需要同步 `scripts/bundle.py` 的公共清单，否则提交检查会拒绝该路径。
+不要用 `git add -f` 强制提交被忽略的档案。新增公开文件时，需要同步 `scripts/career_resume/bundle.py` 的公共清单，否则提交检查会拒绝该路径。
 
 ## 已经跟踪过的资料
 
@@ -55,8 +55,8 @@ git rm --cached -- references/profile.md
 ## 公开导出与私人备份
 
 ```sh
-python3 scripts/package.py
-python3 scripts/package.py --include-personal
+python3 scripts/career.py package
+python3 scripts/career.py package --include-personal
 ```
 
 第一个默认生成精简运行公开包，省略版本文件、Git 忽略文件和维护资源；第二个生成私人备份。二者文件名不同，私人包不能上传作为 Release。
@@ -66,15 +66,15 @@ python3 scripts/package.py --include-personal
 需要全新的公开目录时：
 
 ```sh
-python3 scripts/package.py --public-dir /你的路径/新的公开目录
+python3 scripts/career.py package --public-dir /你的路径/新的公开目录
 ```
 
 目标必须不存在。导出使用明确清单，不复制 Git 历史，也不删除当前个人数据。
 
 ## 文档站不会自动发布个人网页
 
-VitePress 的 Markdown 来源固定为 `docs/`。示例构建读取 `assets/examples/career-demo/`，不读取你根目录下的个人时间线和项目卡。
+VitePress 的 Markdown 来源固定为 `docs/`。示例构建只读取 `examples/career-demo/` 与 `examples/professions/` 两组公共虚构夹具，不读取你根目录下的个人时间线和项目卡。生成到 `docs/public/demo/` 的网页全部来自这些虚构数据，并被 Git 忽略。
 
-个人 HTML 内嵌完整数据与项目卡原文；要公开作品集，先另做内容审查和公开副本。教程站没有自动部署配置，运行 `docs:build` 只在本地构建。
+个人 HTML 内嵌完整数据与项目卡原文；要公开作品集，先另做内容审查和公开副本。`pages.yml` 在推送到 `main` 时只发布教程站与公共虚构示例，不发布 `local/`；`docs:build` 本身只在本地构建，不上传。
 
 忽略与导出解决的是 Git / 发布文件边界。宿主智能体对附件和模型请求的处理由其设置决定。

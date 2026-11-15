@@ -7,13 +7,13 @@
 Python 3.9+ 与 Git，不需要安装第三方 Python 包：
 
 ```sh
-python3 scripts/doctor.py
-python3 scripts/check.py
+python3 scripts/career.py doctor
+python3 tools/check.py
 ```
 
 检查使用临时完整公开副本，不要求先初始化个人档案，也不留下演示或发布产物。需要附加本地资料校验时初始化自己的副本后使用 `--local`。规则改动还应按[行为测试](../docs/maintainers/behavior-testing.md)运行相关虚构场景，记录宿主、模型、产物与未验证项；不要为了测试把自己的简历纳入提交。
 
-修改文档站时另外使用 Node.js 22+ 与 pnpm 11：
+修改文档站时另外使用 Node.js 24.x 与 pnpm 11：
 
 ```sh
 pnpm install --frozen-lockfile
@@ -37,6 +37,6 @@ PR 请写清问题、最终行为、验证方法与局限。不要包含联系�
 
 ## 版本和提交
 
-提交主题可使用 `feat:`、`fix:`、`docs:`、`test:`、`chore:` 加简短英文说明；项目不会要求贡献者改写个人提交时间。发布时统一修改 VERSION。数据格式如有不兼容改动，应提供私人资料迁移步骤，不能用重置模板代替迁移。发布流程见[发布指南](../docs/maintainers/releasing.md)。
+提交主题可使用 `feat:`、`fix:`、`docs:`、`test:`、`chore:` 加简短英文说明；项目不会要求贡献者改写个人提交时间。每次打包由维护者选择完整版本号，成功后写入被 Git 忽略的本地 VERSION；标签发布直接以 Git 标签为版本来源。数据格式如有不兼容改动，应提供私人资料迁移步骤，不能用重置模板代替迁移。发布流程见[发布指南](../docs/maintainers/releasing.md)。
 
-提交前运行 `python3 scripts/check_public_index.py`。本地生成资料由忽略规则排除，公共空模板只在 `assets/starter/` 中修改；新增公共文件还需加入 `scripts/bundle.py` 的受控清单。
+提交前运行 `python3 tools/check_public_index.py`。本地生成资料由忽略规则排除，公共空模板只在 `assets/starter/` 中修改；新增公共文件还需加入 `scripts/career_resume/bundle.py` 的受控清单。

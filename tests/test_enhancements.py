@@ -12,11 +12,11 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from build_timeline import build, validate_data, embedded_attachment
-from create_demo import create
-from update_profile import merge, update, git_delta
-from export_share import export, share_data
-from import_git_activity import collect
+from career_resume.build_timeline import build, validate_data, embedded_attachment
+from career_resume.create_demo import create
+from career_resume.update_profile import merge, update, git_delta
+from career_resume.export_share import export, share_data
+from career_resume.import_git_activity import collect
 
 
 class EnhancementTests(unittest.TestCase):
@@ -78,7 +78,7 @@ class EnhancementTests(unittest.TestCase):
 
     def test_failed_build_restores_data_and_records_unapplied_history(self):
         before=(self.root/'data/timeline.json').read_bytes()
-        with patch('update_profile.build', side_effect=OSError('simulated write failure')):
+        with patch('career_resume.update_profile.build', side_effect=OSError('simulated write failure')):
             with self.assertRaises(OSError):
                 update(self.root,{'meta':{'subtitle':'new text'}},apply=True)
         self.assertEqual((self.root/'data/timeline.json').read_bytes(),before)

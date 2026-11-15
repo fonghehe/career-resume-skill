@@ -5,12 +5,15 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from zipfile import ZipFile
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from bundle import repository_entries
-from create_demo import create
-from package import write_tree
+from career_resume.build_timeline import build
+from career_resume.bundle import repository_entries
+from career_resume.create_demo import create
+from career_resume.init_profile import initialize
+from career_resume.package import write_tree
 
 
 class DemoTests(unittest.TestCase):
@@ -35,8 +38,39 @@ class DemoTests(unittest.TestCase):
             self.assertIn('林小禾', html)
             self.assertIn('教学数据', html)
             self.assertIn('sample-console.md', html)
+            self.assertIn('id="career" open', html)
+            self.assertIn('id="projects" open', html)
             self.assertNotIn('PRIVATE_SENTINEL', html)
         self.assertEqual(hashlib.sha256(self.private.read_bytes()).hexdigest(), self.digest)
+
+    def test_demo_exports_both_word_samples_with_fictional_markers(self):
+        from xml.etree import ElementTree as ET
+        W = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'
+        resume = create(self.repo).parents[1] / 'resume'
+        cases = (('zh-CN', '虚构教学示例', '11906'),
+                 ('en', 'Fictional teaching example', '12240'))
+        for lang, notice, width in cases:
+            with ZipFile(resume / f'resume.{lang}.docx') as word:
+                document = word.read('word/document.xml')
+                self.assertIn(notice.encode(), document)
+                page = ET.fromstring(document).find(f'{{{W}}}body/{{{W}}}sectPr/{{{W}}}pgSz')
+                self.assertEqual(page.get(f'{{{W}}}w'), width)
+        for report in ('match-report.md', 'period-review.md', 'jd-comparison.md'):
+            self.assertIn('E01-A', (resume / report).read_text(encoding='utf-8'))
+
+    def test_empty_personal_timeline_links_to_separate_existing_demo(self):
+        self.private.unlink()
+        self.private.parent.rmdir()
+        initialize(self.repo)
+        personal = build(self.repo)
+        html = personal.read_text(encoding='utf-8')
+        self.assertIn('id="emptyTimeline">', html)
+        self.assertNotIn('<a id="localDemoLink"', html)
+        example = create(self.repo)
+        html = build(self.repo).read_text(encoding='utf-8')
+        self.assertIn('href="../output/demo/showcase/project-timeline.html"', html)
+        self.assertNotIn('林小禾', html)
+        self.assertIn('林小禾', example.read_text(encoding='utf-8'))
 
     def test_repeat_demo_refuses_to_overwrite_existing_output(self):
         page = create(self.repo)
@@ -61,7 +95,7 @@ class DemoTests(unittest.TestCase):
         self.assertEqual(list(outside.iterdir()), [])
 
     def test_symlink_fixture_cannot_become_public_demo_input(self):
-        fixture = self.repo / 'assets/examples/career-demo/data/timeline.json'
+        fixture = self.repo / 'examples/career-demo/data/timeline.json'
         fixture.unlink()
         fixture.symlink_to(self.private)
         with self.assertRaises(ValueError):

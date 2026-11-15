@@ -4,17 +4,7 @@
 
 ## 事实状态不等于熟练程度
 
-| 状态 | 含义 | 使用方式 |
-|---|---|---|
-| `confirmed` | 本人明确陈述或确认，有原话 / 日期记录 | 仍需说明个人责任、时间与来源 |
-| `resume-supported` | 原简历有明确记载，尚未重新确认 | 保留原表述，不扩充具体实现与成果 |
-| `pending` | 信息缺失或待本人确认 | 不能作为已确认贡献 |
-| `proposed-to-verify` | 整理者提出的合理假设或可探索问题 | 标【推测，待确认】，只用于后续追问 |
-| `fabricated-excluded` | 已确认不是本人经历或虚构内容 | 不进入真实项目库和派生内容 |
-| `synthetic-draft` | 隔离的演练草稿 | 只用于教学或练习，不当作职业事实 |
-| `legacy-only` | 只有旧记录，尚未纳入当前事实 | 不进入当前简历正文 |
-| `superseded` | 已被新确认更正或撤回 | 保留历史来源，不采用旧结论 |
-| `git` | 本人匹配的代码活动证据 | 不能单独证明职称、上线或个人成果 |
+字段定义、完整状态表与确认 / 更正 / 撤回规则统一维护在完整包的 `references/fact-contract.md`。正文可采用的字段状态为 `confirmed` 与 `resume-supported`；其他待确认、历史、已排除或教学状态不进入真实简历。`git` 是代码活动证据类型，`display-only` 是展示表达标记，均不能自动升级个人事实。
 
 具体“做过 / 参与过 / 接触过 / 学习过”另行记录。`confirmed` 可以确认“只学习过某技术”，不能因此变成“具备生产经验”。
 
@@ -41,11 +31,11 @@
 }
 ```
 
-`id` 唯一，`extracted_text` 是相对 skill 根目录的已有文本快照。PDF 来源可附 `sha256`（原文件 SHA-256）和 `pages`（正整数）；有页码时，快照以 `## Page 1` 等按顺序分节。脚本只检查哈希格式与页码，不拥有原 PDF 时不会证明哈希与原文件一致。
+`id` 唯一，`extracted_text` 是相对个人资料目录 `local/` 的已有文本快照。PDF 来源可附 `sha256`（原文件 SHA-256）和 `pages`（正整数）；有页码时，快照以 `## Page 1` 等按顺序分节。脚本只检查哈希格式与页码，不拥有原 PDF 时不会证明哈希与原文件一致。
 
 ## 时间线
 
-顶层字段：`meta`、`profile`、`leadership`、`career`、`projects`、`repositories`。空模板见 `assets/starter/data/timeline.json`。
+顶层字段：`meta`、`profile`、`leadership`、`career`、`projects`、`repositories`，可选 `presentation`。空模板见 `assets/starter/data/timeline.json`。
 
 - `meta`：`title`、`subtitle`、`updatedAt`、`dateConvention`、`repositoryNote`。
 - `profile`：`name`、`englishName`、`careerStart`、`careerEnd`、`headline`。
@@ -53,6 +43,7 @@
 - `career`：`id`、`organization`、`role`、`start`、`end`、`summary`；可附 `level`、`groupOrganization`，将已确认属于同一公司体系的内部阶段合并为一段工作经历。
 - `projects`：`id`、`name`、`nature`、`organization`、`category`、`status`、`start`、`end`、`ongoing`、`tech`、`highlights`；可附 `url`、`projectBackend`、`backendParticipation`、`collaboration`。
 - `repositories`：`name`、`group`、`projectId`、`start`、`end`、`count`、`tech`、`note`。次数代表署名活动记录，不代表独立成果。
+- `presentation`（可选）：职业显示、主题、栏目标题与自定义职业模块（课程、作品、资格、活动、服务案例等），条目仍带 `factIds` 回到源记录；格式与职业建议见公共 `references/profession-workflow.md`。
 
 Git 采集报告独立保存在私人 `local/output/git-activity/`：`records` 保留 SHA、Author Date、Committer Date、作者邮箱和主题；`repository` 是区间摘要，无匹配则为 null，`timelineEvents` 是可整理为网页 Git 足迹的逐提交事件。`mappingStatus` 默认 pending，不自动成为个人项目事实。`--folder` 的 schemaVersion 2 报告在 `reports` 下保存各仓库及 `relativePath`，另列 `skipped`。同名仓库用相对目录区分。
 
@@ -83,3 +74,7 @@ Git 采集报告独立保存在私人 `local/output/git-activity/`：`records` �
 - Git event：`files` 记录实际变更文件。仓库 `activity` 包含 `monthly`、`modules`、`types`、`activeMonths`；模块计数是涉及该模块的 Commit 数，可重叠。月份沿用 Author Date 原时区，所有月份计数之和等于仓库总数。
 
 增量更新与分享的工具用法见[命令参考](commands.md)，详细规则保存在 `references/enhancements.md`。
+
+### SVN 工作副本证据
+
+项目可选 `svnWorkingCopy` 对象：`name`、`author` 为字符串；`revision`、`fileCount`、`directoryCount`、`visibleRevisionCount` 为非负整数；`start` / `end` 为带时区的节点最后修改日期范围；`historyComplete` 必须为 `false`。这些字段只描述当前基准节点快照，不代表完整提交次数，不能写入 `repositories.count` 或伪造成 Git event。页面在项目卡、详情及“仓库与代码记录”的 SVN 区域展示，Git Commit 总数保持独立；年份筛选只筛项目，快照计数不按年份拆分。分享导出默认省略 SVN 作者和快照证据。

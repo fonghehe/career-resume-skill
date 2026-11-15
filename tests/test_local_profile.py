@@ -10,13 +10,14 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from bundle import repository_entries
+sys.path.insert(0, str(ROOT / 'tools'))
+from career_resume.bundle import repository_entries
 from check_public_index import check
-from init_profile import initialize
-from package import write_tree
-from validate import validate
-from build_timeline import build
-from update_profile import update
+from career_resume.init_profile import initialize
+from career_resume.package import write_tree
+from career_resume.validate import validate
+from career_resume.build_timeline import build
+from career_resume.update_profile import update
 
 
 class LocalProfileTests(unittest.TestCase):

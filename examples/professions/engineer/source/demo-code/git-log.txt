@@ -1,0 +1,4 @@
+虚构演示仓库：本次实际生成的提交，时间为教学设定。
+25c73d4 2026-11-15T09:01:00+08:00 docs: describe fictional order workbench
+b9de509 2026-11-15T09:02:00+08:00 feat: illustrate versioned order event handling
+3a71deb 2026-11-15T09:03:00+08:00 docs: illustrate recovery boundaries

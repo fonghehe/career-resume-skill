@@ -16,27 +16,31 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.14'
-      - name: Verify tag matches VERSION
+      - name: Verify release tag version
         env:
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
           python - <<'PY'
           import os, sys
-          sys.path.insert(0, 'scripts')
-          from release import read_version
-          from pathlib import Path
-          if os.environ['RELEASE_TAG'] != 'v' + read_version(Path('.')):
-              raise SystemExit('Tag must match VERSION exactly')
+          sys.path.insert(0, 'tools')
+          from release import validate_version
+          tag = os.environ['RELEASE_TAG']
+          if not tag.startswith('v'):
+              raise SystemExit('Release tag must start with v')
+          validate_version(tag[1:])
           PY
-      - run: python scripts/check.py --index
+      - run: python tools/check.py --index
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm docs:build
-      - run: python scripts/release.py --output-dir local/dist/release
+      - name: Package the verified tag version
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: python tools/release.py --version "${RELEASE_TAG#v}" --output-dir local/dist/release
       - uses: actions/upload-artifact@v4
         with:
           name: public-release

@@ -1,17 +1,30 @@
 # 一步一步生成自己的履历网页
 
-完整文字履历是第一阶段的基础交付，网页按需追加；文字履历生成见[简单开始](first-library.md)。想手动操作时，个人网页读取 `local/data/timeline.json` 和 `local/references/projects/*.md`，生成单个 `local/showcase/project-timeline.html`。它展示公司任职、职级变化、项目阶段、仓库统计及可展开的本人 Commit 明细；Git 事件可按项目和仓库筛选，在项目详情中也能查看。
+想直接在网页里修改资料、补充项目或确认事实，可以[打开本地工作台](workbench.md)。
+
+已导入经历时，打开原工作副本，把这段话发给智能体：
+
+```text
+请用当前工作副本的 career-resume-skill，把已有履历生成离线网页。
+从源记录同步本次允许展示的任职、学习、资格、案例或其他经历摘要，已有展示数据先预览再增量更新。
+未知日期和成果留空，保留确认状态。没有 Git 记录也继续生成。
+构建并校验网页，给我可打开的 HTML 路径。
+```
+
+打开 `local/showcase/project-timeline.html` 即可离线查看。想先看有内容的样例，打开[完整虚构示例](../example.md)；还没有履历时，先[整理第一份履历](first-library.md)。
+
+以下是手动流程。构建工具读取 `local/data/timeline.json` 和项目卡。页面按材料展示任职、教育、资格、案例或自定义经历模块；只有实际代码材料才附代码记录。
 
 ## 1. 先准备事实
 
-完成简历导入，至少确认一段任职或一个项目。来源、贡献与待确认信息保存在 Markdown 中，JSON 只保存用于展示的数据。没有管理经历时 `leadership` 保持空数组，不为了页面填上管理人数。
+先保存本次允许采用的事实，任职、学习、服务或其他专业经历均可，不要求旧简历或项目。来源、贡献与待确认信息保存在 Markdown 中，JSON 只保存用于展示的数据。没有管理经历时 `leadership` 保持空数组，不为了页面填上管理人数。
 
 对智能体发送：
 
 ```text
 请根据当前事实库准备 local/data/timeline.json，用于生成个人履历网页。
 不要修改原始事实，也不要读取虚构示例给我填空。
-项目 ID 必须对应已有项目卡；技术标签区分个人使用和项目后端环境。
+模块按实际材料组织，不用填满固定职业栏目；确有案例时，案例 ID 对应已有卡片。
 日期只有月份时先问我展示约定；未知项目起止同时留空。
 没有已确认 Git 活动时 repositories 保持空数组。
 请先检查日期、归属、个人贡献和待确认状态，再生成网页。
@@ -19,50 +32,61 @@
 
 ## 2. 理解最小数据
 
-下面是可用于理解格式的虚构数据。**不要把它当作自己的经历。** 完整虚构样例可通过快速开始的 `create_demo.py` 运行。
+下面是可用于理解格式的虚构数据。**不要把它当作自己的经历。** 完整虚构样例可通过快速开始的 `career.py demo` 运行。
 
 ```json
 {
   "meta": {
-    "title": "我的职业时间线",
-    "subtitle": "持续维护的职业事实与项目记录",
-    "updatedAt": "2025-07-01",
-    "dateConvention": "下列日期仅为虚构教学示例。",
-    "repositoryNote": "暂未导入仓库活动。"
+    "title": "个人职业履历（虚构示例）",
+    "subtitle": "按实际工作、学习和实践组织",
+    "updatedAt": "",
+    "synthetic": true
   },
   "profile": {
     "name": "示例使用者（虚构）",
     "englishName": "",
-    "careerStart": "2024-01-01",
-    "careerEnd": "2024-12-31",
-    "headline": "前端开发"
+    "careerStart": "",
+    "careerEnd": "",
+    "headline": "工作、学习与实践"
   },
   "leadership": {
-    "phases": [], "metrics": [], "responsibilities": [],
-    "boundary": "暂无已确认管理经历。", "copilot": []
+    "phases": [],
+    "metrics": [],
+    "responsibilities": [],
+    "boundary": "",
+    "copilot": []
   },
-  "career": [
-    {
-      "id": "E01", "organization": "示例公司（虚构）",
-      "role": "前端开发", "start": "2024-01-01", "end": "2024-12-31",
-      "summary": "参与内部业务页面。"
-    }
-  ],
-  "projects": [
-    {
-      "id": "P01", "name": "示例项目（虚构）", "nature": "company",
-      "organization": "示例公司（虚构）", "category": "业务前端",
-      "status": "resume-supported", "start": "", "end": "",
-      "tech": ["TypeScript"], "highlights": ["具体实现和结果待补充"]
-    }
-  ],
-  "repositories": []
+  "career": [],
+  "projects": [],
+  "repositories": [],
+  "presentation": {
+    "sections": [
+      {
+        "id": "learning",
+        "title": "学习与实践",
+        "items": [
+          {
+            "title": "虚构资料整理培训",
+            "period": "2024年",
+            "summary": "参与整理练习；具体事实和状态保留在源记录。",
+            "factIds": [
+              "L01"
+            ]
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
 
-`projects` 中有 `P01` 时，必须有以 `# P01｜` 开头的项目卡。不能只复制 JSON 后忽略卡片；示例中项目日期为空，因此只出现项目卡，不画项目区间。
+这个最小示例没有任职、项目或仓库，仅通过自定义模块展示已有材料。L01 应能回到真实使用时的源记录；示例自身为虚构。职业名称可留空或自由填写，不存在需注册的职业名单。
 
-## 3. 项目卡与索引配套
+### 任意职业与自定义模块
+
+`presentation.sections` 的模块和标题按本人材料决定，可用于教育、资格、作品、课程、研究、活动、长期服务或其他经历。没有材料的模块不显示；同一个人跨领域时可以组合使用。只有实际案例才填 `projects` 并维护对应卡片；只有实际代码资料或显式需要技术分类时才启用技术栏目。
+
+## 3. 有案例时再维护卡片与索引
 
 你的项目卡可以放在 `local/references/projects/my-project.md`，第一行写 `# P01｜你的项目名称`。文件名不必等于 ID，但同一 ID 只能有一张卡。
 
@@ -71,7 +95,7 @@
 初次构建前检查：
 
 ```sh
-python3 scripts/validate.py
+python3 scripts/career.py validate
 ```
 
 如果已有 HTML 而此次更新了数据，校验可能报告网页过期。完成源数据修正后重新构建，再校验即可；不要把旧网页内容复制回事实库。
@@ -79,8 +103,8 @@ python3 scripts/validate.py
 ## 4. 构建与查看
 
 ```sh
-python3 scripts/build_timeline.py
-python3 scripts/validate.py
+python3 scripts/career.py web
+python3 scripts/career.py validate
 ```
 
 打开 `local/showcase/project-timeline.html`。macOS 可以执行：
@@ -91,12 +115,15 @@ open local/showcase/project-timeline.html
 
 其他系统用文件管理器或浏览器打开。默认构建会更新这个生成文件，原始 JSON 与项目卡不会被改写。无需启动 Python 服务或安装 VitePress。
 
+网页会随窗口宽度调整：任职卡片和项目卡片在宽屏并排，窄屏转为单列；公司内部阶段默认折叠，展开后在限定高度内滚动；长职责先显示摘要，可展开完整文字。个人页的任职、项目历程、仓库与本人 Commit 三个模块默认收起，虚构演示默认展开任职和项目，标题显示当前范围的数量，支持单独展开或一键全部展开 / 收起。顶部可跳转并展开任职、项目和代码活动，分享选项收在“分享当前范围”中。项目详情在宽屏按正文与辅助信息分栏，手机上顺序阅读；时间轴和仓库表可在各自区域横向滚动。
+
 ## 5. 做一次人工检查
 
 - 任职时间与本人记录一致，展示日期约定已写明。
 - 每个项目属于正确公司或个人项目类别。
 - 搜索能找到项目；点击后看到对应卡片及待确认信息。
 - 项目采用的后端技术没有变成未经确认的个人后端贡献。
+- 职业模块的条目能回到事实记录；没有材料的模块没有出现在页面上。
 - 没有为填满页面而添加用户量、性能比例、管理人数或仓库次数。
 
 结构校验只能证明格式和文件关系符合约定，不能证明这些经历真实。
@@ -110,5 +137,7 @@ open local/showcase/project-timeline.html
 ```
 
 网页内嵌 JSON 和完整项目卡原文。即使页面摘要没有展示某些文字，它们仍在 HTML 中。默认生成网页供自己使用；要公开个人网页时，另行选择可公开事实、审查内容并生成公开副本，不直接部署私人 HTML。
+
+想看教师、设计师、销售、财务和软件工程师五种职业的完整履历、简历与个人网页，见[多职业示例](../examples.md)。它们同样只使用虚构数据，网页由公共脚本从展示数据重建，不读取任何人的私人履历。
 
 下一步：[补充 Git 活动](git-timeline.md)；更多字段见[数据模型](../reference/data-model.md)。

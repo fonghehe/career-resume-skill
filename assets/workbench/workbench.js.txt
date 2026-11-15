@@ -1,0 +1,313 @@
+'use strict';
+const $ = id => document.getElementById(id);
+let token = location.hash.slice(1) || sessionStorage.getItem('career-workbench-token') || '';
+sessionStorage.setItem('career-workbench-token', token);
+history.replaceState(null, '', location.pathname);
+let saved, tab = 'profile', selected = '', changes = new Map(), notes = new Map();
+let previewTimer, previewSequence = 0, resumeDirty = false;
+const fields = {
+  profile: [['name','姓名'],['englishName','英文名'],['headline','职业定位'],['email','邮箱'],['phone','电话'],['education','教育经历']],
+  career: [['organization','单位／任职归属'],['role','正式职称（未知可空）'],['level','职级（按需）'],['start','开始日期'],['end','结束日期'],['summary','本人职责']],
+  projects: [['name','项目／案例名称'],['organization','单位／个人归属'],['nature','性质'],['category','类别'],['start','开始日期'],['end','结束日期'],['summary','案例摘要'],['tech','本人使用的方法与工具'],['highlights','本人工作与结果'],['projectBackend','项目环境（按需）'],['collaboration','协作范围'],['milestones','关键阶段']]
+};
+const lists = new Set(['tech','highlights','projectBackend','collaboration']);
+function status(text, error = false) { $('status').textContent = text; $('status').classList.toggle('error', error); }
+function run(action) { return async () => { try { await action(); } catch (error) { status(error.message, true); } }; }
+async function api(path, payload, binary = false) {
+  const response = await fetch('/api/' + path, {method: payload === undefined ? 'GET' : 'POST',
+    headers: {'X-Workbench-Token': token, 'Content-Type':'application/json'},
+    body: payload === undefined ? undefined : JSON.stringify(payload)});
+  if (!response.ok) throw new Error((await response.json()).error || '操作失败');
+  return binary ? response.blob() : response.json();
+}
+function option(select, value, text) { const item = new Option(text, value); select.add(item); }
+function node(tag, text, className) { const item = document.createElement(tag); item.textContent = text; if (className) item.className = className; return item; }
+function keyFor(collection, id) { return collection + '/' + id; }
+function record(id = selected, collection = tab) {
+  if (collection === 'profile') return saved.data.profile;
+  return saved.data[collection].find(row => row.id === id) || {};
+}
+function rawFields(id, collection) {
+  const path = collection === 'projects' ? saved.cards[id] : 'references/profile.md';
+  const text = saved.notes[path] || '';
+  const match = /<!-- career-workbench-current -->\n```json\n([\s\S]*?)\n```/.exec(text);
+  if (!match) return {};
+  const group = JSON.parse(match[1])[keyFor(collection, id)] || {};
+  return Object.fromEntries(Object.entries(group).map(([field, value]) => [field, value.value]));
+}
+function draftKey() { return 'career-workbench-draft:' + saved.workspace; }
+function remember() {
+  try { localStorage.setItem(draftKey(), JSON.stringify({revision:saved.revision,changes:[...changes],notes:[...notes],resume: resumeDirty ? {body:$('resumeBody').value,report:$('resumeReport').value,version:$('resumeVersion').value,language:$('resumeLanguage').value,theme:$('resumeTheme').value} : null})); } catch { /* File saving remains available when browser storage is disabled. */ }
+  status(changes.size || notes.size ? `有 ${changes.size + notes.size} 项未保存修改` : '已保存到本地资料库');
+  clearTimeout(previewTimer); previewTimer = setTimeout(() => updatePreview().catch(error => status(error.message, true)), 350);
+}
+function renderRecord() {
+  const picker = $('recordPicker'); picker.replaceChildren();
+  const collection = tab;
+  $('recordTitle').textContent = {profile:'个人资料',career:'工作经历',projects:'项目与案例'}[tab];
+  $('addRecord').hidden = tab === 'profile'; $('recordPickerLabel').hidden = tab === 'profile';
+  const rows = tab === 'profile' ? [] : saved.data[tab];
+  rows.forEach(row => option(picker,row.id,row.id + ' · ' + (row.name || row.organization)));
+  for (const change of changes.values()) if (change.collection === tab && !rows.some(row => row.id === change.id)) option(picker,change.id,change.id + ' · 新记录');
+  if (tab === 'profile') selected = 'U01';
+  else if (![...picker.options].some(item => item.value === selected)) selected = picker.options[0]?.value || '';
+  picker.value = selected;
+  const form = $('recordForm'); form.replaceChildren();
+  if (!selected) { form.append(node('p','还没有记录，点击「新增」开始。')); return; }
+  const original = {...record(), ...rawFields(selected, collection)};
+  const change = changes.get(keyFor(collection, selected));
+  const values = {...original, ...(change?.fields || {})};
+  for (const [field, label] of fields[tab]) {
+    const wrapper = node('label',label);
+    const multiline = ['summary','milestones'].includes(field) || lists.has(field);
+    const input = document.createElement(field === 'nature' ? 'select' : multiline ? 'textarea' : 'input');
+    input.name = field;
+    if (field === 'nature') { option(input,'company','单位或机构实践'); option(input,'personal','独立实践'); }
+    let value = values[field] ?? '';
+    if (lists.has(field)) value = (value || []).join('\n');
+    if (field === 'milestones') value = (value || []).map(item => [item.date || '',item.title,item.summary || ''].join(' | ')).join('\n');
+    input.value = value;
+    if (multiline) input.rows = field === 'summary' ? 4 : 3;
+    if (lists.has(field)) input.placeholder = '每行一项';
+    if (field === 'milestones') input.placeholder = '日期 | 阶段标题 | 说明，每行一个阶段';
+    if (['start','end'].includes(field)) input.placeholder = 'YYYY、YYYY-MM 或 YYYY-MM-DD；未知留空';
+    input.addEventListener('input', collectRecord);
+    wrapper.append(input); form.append(wrapper);
+    const controls = document.createElement('details'); controls.className = 'field-controls'; controls.append(node('summary','确认状态与事实编号（可选）'));
+    const confirmLabel = node('label','', 'check'), confirmInput = document.createElement('input');
+    confirmInput.type = 'checkbox'; confirmInput.dataset.confirmField = field;
+    confirmInput.checked = Boolean(change?.confirmFields?.includes(field));
+    confirmInput.addEventListener('change', collectRecord);
+    confirmLabel.append(confirmInput, document.createTextNode('确认此字段，即使文字未改'));
+    const idLabel = node('label','已有事实编号（可选）'), factId = document.createElement('input');
+    factId.dataset.factField = field; factId.value = change?.factIds?.[field] || '';
+    factId.placeholder = collection === 'projects' ? selected + '-A' : 'E01-T';
+    factId.addEventListener('input', collectRecord); idLabel.append(factId);
+    controls.append(confirmLabel,idLabel); form.append(controls);
+  }
+  $('editMode').value = change?.mode || 'fact'; $('confirmFact').checked = change?.confirmed || false;
+}
+function collectRecord() {
+  if (!selected) return;
+  const collection = tab, id = selected, original = {...record(),...rawFields(id,collection)}, patch = {}, factIds = {}, confirmFields = [];
+  const isNew = collection !== 'profile' && !saved.data[collection].some(row => row.id === id);
+  for (const [field] of fields[collection]) {
+    const input = $('recordForm').elements.namedItem(field); if (!input) continue;
+    let value = input.value;
+    if (lists.has(field)) value = value.split('\n').map(line => line.trim()).filter(Boolean);
+    if (field === 'milestones') value = value.split('\n').filter(line => line.trim()).map(line => {
+      const [date, title, ...rest] = line.split('|').map(item => item.trim());
+      return {date:date || '',title:title || '',summary:rest.join(' | ')};
+    });
+    const before = original[field] ?? (lists.has(field) || field === 'milestones' ? [] : field === 'nature' ? 'company' : '');
+    const confirmInput = $('recordForm').querySelector(`[data-confirm-field="${field}"]`);
+    const factInput = $('recordForm').querySelector(`[data-fact-field="${field}"]`);
+    if (confirmInput?.checked) confirmFields.push(field);
+    if (factInput?.value.trim()) factIds[field] = factInput.value.trim();
+    if (isNew || confirmInput?.checked || JSON.stringify(value) !== JSON.stringify(before)) patch[field] = value;
+  }
+  const key = keyFor(collection,id);
+  if (Object.keys(patch).length) changes.set(key,{collection,id,fields:patch,factIds,confirmFields,confirmOnly:confirmFields.length > 0,mode:$('editMode').value,confirmed:$('confirmFact').checked});
+  else changes.delete(key);
+  remember();
+}
+function addRecord() {
+  const used = new Set([...saved.data[tab].map(row => row.id), ...[...changes.values()].filter(c => c.collection === tab).map(c => c.id)]);
+  let count = 1, id; do { id = (tab === 'career' ? 'E' : 'P') + String(count++).padStart(2,'0'); } while (used.has(id));
+  selected = id; changes.set(keyFor(tab,id),{collection:tab,id,fields:{},mode:'fact',confirmed:false}); renderRecord(); remember();
+}
+function renderNotes() {
+  const picker = $('notePicker'), previous = picker.value; picker.replaceChildren();
+  Object.keys(saved.notes).sort().forEach(path => option(picker,path,path));
+  if (saved.notes[previous] !== undefined) picker.value = previous;
+  $('noteText').value = notes.get(picker.value) ?? saved.notes[picker.value] ?? '';
+}
+function renderPending() {
+  const target = $('pendingList'); target.replaceChildren();
+  for (const [path,text] of Object.entries(saved.notes)) {
+    const lines = text.split('\n').map((text,index) => ({text,index})).filter(row => /pending|待确认|待补/.test(row.text) && !row.text.startsWith('#'));
+    for (const row of lines) {
+      const item = node('div','', 'row'); item.append(node('strong',path),node('p',row.text));
+      const open = node('button','查看并编辑'); open.onclick = () => { switchTab('notes'); $('notePicker').value = path; $('notePicker').dispatchEvent(new Event('change')); $('noteText').focus(); };
+      item.append(open); target.append(item);
+    }
+  }
+  if (!target.children.length) target.append(node('p','当前可维护记录中未发现待确认条目。'));
+}
+function renderHistory() {
+  $('historyList').replaceChildren();
+  for (const entry of saved.history) {
+    const row = node('div','','row'); row.append(node('strong',entry.label),node('p',entry.time));
+    const view = node('button','查看变化'); view.onclick = run(async () => { const result = await api('history',{id:entry.id}); $('historyDetail').textContent = result.text; });
+    const restore = node('button','恢复到此次修改前'); restore.onclick = run(async () => {
+      if (dirty()) throw new Error('请先保存或放弃当前草稿，再恢复历史。');
+      if (!confirm('恢复这次修改涉及的文件？后续修改存在时会停止恢复。')) return;
+      const result = await api('undo',{id:entry.id,revision:saved.revision}); await accept(result.state);
+    });
+    row.append(view,restore); $('historyList').append(row);
+  }
+  if (!saved.history.length) $('historyList').append(node('p','保存后的修改记录会出现在这里。'));
+}
+function checkboxes(target) {
+  const container = $(target); container.replaceChildren();
+  const groups = [
+    ['careers', '任职与实践', saved.data.career.map(row => [row.id,[row.organization,row.role].filter(Boolean).join(' · ')])],
+    ['projects', '代表案例（可选）', saved.data.projects.map(row => [row.id,row.name])],
+    ['sections', '教育、资格与其他模块', (saved.data.presentation?.sections || []).filter(row => row.items.length).map(row => [row.id,row.title])],
+    ['records', '源记录', Object.keys(saved.notes).filter(path => !path.startsWith('references/projects/')).sort().map(path => [path,path])]
+  ];
+  for (const [group,title,rows] of groups) {
+    if (!rows.length) continue;
+    container.append(node('h4',title));
+    for (const [id,title] of rows) {
+      const label = node('label','', 'check'), input = document.createElement('input');
+      input.type = 'checkbox'; input.value = id; input.dataset.group = group;
+      label.append(input,document.createTextNode(title));
+      if (target === 'projectSelection') {
+        const up = node('button','上移'), down = node('button','下移');
+        up.type = down.type = 'button';
+        up.onclick = () => { if (label.previousElementSibling?.tagName === 'LABEL') container.insertBefore(label,label.previousElementSibling); };
+        down.onclick = () => { if (label.nextElementSibling?.tagName === 'LABEL') container.insertBefore(label.nextElementSibling,label); };
+        label.append(up,down);
+      }
+      container.append(label);
+    }
+  }
+}
+function chosenMaterials(target) {
+  const selected = {careers:[],projects:[],sections:[],records:[]};
+  for (const input of $(target).querySelectorAll('input:checked')) selected[input.dataset.group].push(input.value);
+  return selected;
+}
+function renderResumes() {
+  $('resumePicker').replaceChildren(); $('compareBefore').replaceChildren(); $('compareAfter').replaceChildren();
+  saved.resumes.forEach((item,index) => option($('resumePicker'),String(index),item.version + ' · ' + item.language));
+  [...new Set(saved.resumes.map(row => row.version))].forEach(version => {
+    option($('compareBefore'),version,version); option($('compareAfter'),version,version);
+  });
+  checkboxes('projectSelection'); checkboxes('agentSelection');
+}
+function switchTab(value) {
+  tab = value;
+  document.querySelectorAll('[data-tab]').forEach(button => button.classList.toggle('active',button.dataset.tab === tab));
+  for (const name of ['notes','pending','history','resume','agent']) $(name + 'Panel').hidden = name !== tab;
+  $('recordPanel').hidden = !fields[tab];
+  if (fields[tab]) renderRecord();
+  if (tab === 'notes') renderNotes();
+  if (tab === 'pending') renderPending();
+  if (tab === 'history') renderHistory();
+}
+function dirty() { return changes.size > 0 || notes.size > 0 || resumeDirty; }
+async function accept(value) {
+  saved = value; changes.clear(); notes.clear();
+  $('workspace').textContent = saved.workspace;
+  switchTab(tab); renderResumes(); status('已保存到本地资料库');
+  await updatePreview();
+}
+function normalizedDate(value, end) {
+  if (/^\d{4}$/.test(value)) return `${value}-${end ? '12-31' : '01-01'}`;
+  if (!/^\d{4}-\d{2}$/.test(value)) return value;
+  const [year,month] = value.split('-').map(Number);
+  return `${value}-${end ? String(new Date(year,month,0).getDate()).padStart(2,'0') : '01'}`;
+}
+async function updatePreview() {
+  const sequence = ++previewSequence, data = structuredClone(saved.data);
+  for (const change of changes.values()) {
+    let row = change.collection === 'profile' ? data.profile : data[change.collection].find(item => item.id === change.id);
+    if (!row) {
+      row = change.collection === 'projects' ? {id:change.id,name:'新项目',organization:'',nature:'company',category:'',status:'confirmed',tech:[],highlights:[],start:'',end:''} : {id:change.id,organization:'待填写单位或任职归属',role:'',summary:'',start:'',end:''};
+      data[change.collection].push(row);
+    }
+    Object.assign(row,change.fields);
+    if (change.fields.start !== undefined) row.start = normalizedDate(change.fields.start,false);
+    if (change.fields.end !== undefined) row.end = normalizedDate(change.fields.end,true);
+  }
+  const result = await api('preview',{data,notes:[...notes].map(([path,text]) => ({path,text}))});
+  if (sequence !== previewSequence) return;
+  $('preview').srcdoc = result.html;
+  $('previewLabel').textContent = changes.size || notes.size ? '尚未保存的草稿预览' : '已保存';
+}
+async function load() {
+  if (dirty() && !confirm('重新载入将放弃页面上的未保存修改，是否继续？')) return;
+  resumeDirty = false; await accept(await api('state'));
+  let draft;
+  try { draft = JSON.parse(localStorage.getItem(draftKey())); } catch { draft = null; }
+  $('draftNotice').hidden = !draft || (!draft.changes.length && !draft.notes.length && !draft.resume);
+}
+$('reload').onclick = run(load);
+$('addRecord').onclick = addRecord;
+$('recordPicker').onchange = () => { selected = $('recordPicker').value; renderRecord(); };
+$('recordForm').onsubmit = event => event.preventDefault();
+$('editMode').onchange = collectRecord; $('confirmFact').onchange = collectRecord;
+$('notePicker').onchange = () => { $('noteText').value = notes.get($('notePicker').value) ?? saved.notes[$('notePicker').value]; };
+$('noteText').oninput = () => { const path = $('notePicker').value; if ($('noteText').value === saved.notes[path]) notes.delete(path); else notes.set(path,$('noteText').value); remember(); };
+$('save').onclick = run(async () => {
+  if (!changes.size && !notes.size) throw new Error('没有待保存的履历修改。简历请用「另存正文与报告」。');
+  $('saveDiff').textContent = [...changes.values()].map(change => `${change.collection}/${change.id} · ${change.mode === 'fact' ? '事实确认' : '展示修改'}\n` + Object.entries(change.fields).map(([k,v]) => { const before = {...record(change.id,change.collection),...rawFields(change.id,change.collection)}[k]; return `${k}: ${JSON.stringify(before ?? '')} → ${JSON.stringify(v)}`; }).join('\n')).join('\n\n') + [...notes.keys()].map(path => '\n原文编辑 ' + path).join('');
+  $('saveDialog').showModal();
+});
+$('cancelSave').onclick = () => $('saveDialog').close();
+$('applySave').onclick = run(async () => {
+  $('applySave').disabled = true;
+  try {
+    const result = await api('save',{revision:saved.revision,changes:[...changes.values()],notes:[...notes].map(([path,text]) => ({path,text}))});
+    try { localStorage.removeItem(draftKey()); } catch { /* Optional draft storage. */ }
+    $('saveDialog').close(); await accept(result.state); if (resumeDirty) remember();
+  } finally { $('applySave').disabled = false; }
+});
+$('rebuild').onclick = run(async () => { if (dirty()) throw new Error('请先保存当前草稿。'); await accept((await api('rebuild',{revision:saved.revision})).state); });
+$('recoverDraft').onclick = run(async () => {
+  const draft = JSON.parse(localStorage.getItem(draftKey()));
+  if (draft.revision !== saved.revision) {
+    const text = JSON.stringify(draft,null,2), blob = new Blob([text],{type:'application/json'}), link = document.createElement('a');
+    link.href = URL.createObjectURL(blob); link.download = 'career-unsaved-draft.json'; link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href),30000);
+    throw new Error('草稿基线已过期，已导出草稿文件。请核对当前记录后再编辑。');
+  }
+  changes = new Map(draft.changes); notes = new Map(draft.notes);
+  if (draft.resume) {
+    $('resumeBody').value = draft.resume.body; $('resumeReport').value = draft.resume.report;
+    $('resumeVersion').value = draft.resume.version; $('resumeLanguage').value = draft.resume.language; $('resumeTheme').value = draft.resume.theme || 'sky'; resumeDirty = true;
+  } $('draftNotice').hidden = true; switchTab(tab); remember();
+});
+$('discardDraft').onclick = () => { try { localStorage.removeItem(draftKey()); } catch { /* Optional draft storage. */ } $('draftNotice').hidden = true; };
+$('loadResume').onclick = run(async () => {
+  const row = saved.resumes[Number($('resumePicker').value)]; if (!row) throw new Error('还没有简历版本。可以先选择任职、模块或源记录准备材料。');
+  if (resumeDirty && !confirm('载入该版本会替换当前简历草稿，是否继续？')) return;
+  $('resumeBody').value = row.body; $('resumeReport').value = row.report; $('resumeLanguage').value = row.language; $('resumeTheme').value = row.theme || 'sky';
+  $('resumeVersion').value = row.version + '-v2'; resumeDirty = false;
+});
+for (const id of ['resumeBody','resumeReport','resumeVersion','resumeLanguage','resumeTheme']) $(id).oninput = () => { resumeDirty = true; remember(); };
+$('composeResume').onclick = run(async () => {
+  if (changes.size || notes.size) throw new Error('请先保存履历修改，再准备选材草稿。');
+  if (resumeDirty && !confirm('准备材料会替换当前编辑区，是否继续？')) return;
+  const result = await api('draft',{...chosenMaterials('projectSelection'),language:$('resumeLanguage').value});
+  $('resumeBody').value = result.body; $('resumeReport').value = result.report;
+  $('resumeResult').textContent = result.context;
+  $('resumeVersion').value = new Date().toLocaleDateString('sv-SE') + '-选材草稿';
+  resumeDirty = true; remember();
+  status('已准备所选材料；请核对事实并交给智能体完成简历写作。');
+});
+$('saveResume').onclick = run(async () => {
+  if (changes.size || notes.size) throw new Error('请先保存履历修改，再另存简历。');
+  const result = await api('resume',{revision:saved.revision,version:$('resumeVersion').value,language:$('resumeLanguage').value,body:$('resumeBody').value,report:$('resumeReport').value,theme:$('resumeTheme').value});
+  resumeDirty = false; try { localStorage.removeItem(draftKey()); } catch {} await accept(result.state); status('已另存简历正文与报告');
+});
+function downloadResume(format) { return run(async () => {
+  const row = saved.resumes[Number($('resumePicker').value)]; if (!row) throw new Error('请先保存简历版本。');
+  if (resumeDirty && ($('resumeBody').value !== row.body || $('resumeReport').value !== row.report || $('resumeLanguage').value !== row.language)) throw new Error('请先另存当前简历草稿；下载使用的是已保存版本。');
+  status(format === 'pdf' ? '正在本地转换 PDF…' : '正在导出 DOCX…');
+  const blob = await api(format,{path:row.path,theme:$('resumeTheme').value},true), url = URL.createObjectURL(blob), link = document.createElement('a');
+  const suffix = row.language === 'en' ? 'international' : $('resumeTheme').value;
+  link.href = url; link.download = `resume.${row.language}.${suffix}.${format}`; link.click(); setTimeout(() => URL.revokeObjectURL(url),30000);
+  status('已下载 ' + format.toUpperCase() + '，请打开检查字体与分页。');
+}); }
+$('downloadDocx').onclick = downloadResume('docx');
+$('downloadPdf').onclick = downloadResume('pdf');
+$('compareResume').onclick = run(async () => { $('resumeResult').textContent = (await api('compare',{before:$('compareBefore').value,after:$('compareAfter').value,language:$('resumeLanguage').value,theme:$('resumeTheme').value})).text; });
+$('checkImpact').onclick = run(async () => { $('resumeResult').textContent = (await api('impact',{facts:$('impactFacts').value.trim().split(/\s+/)})).text; });
+$('prepareContext').onclick = run(async () => { $('agentContext').value = (await api('context',{...chosenMaterials('agentSelection'),instruction:$('agentInstruction').value,jd:$('agentJD').value})).text; });
+$('copyContext').onclick = run(async () => { await navigator.clipboard.writeText($('agentContext').value); status('材料已复制，可粘贴给 Agent。'); });
+document.querySelectorAll('[data-tab]').forEach(button => button.onclick = () => switchTab(button.dataset.tab));
+window.addEventListener('beforeunload',event => { if (dirty()) { event.preventDefault(); event.returnValue = ''; } });
+load().catch(error => status(error.message,true));

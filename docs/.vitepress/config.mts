@@ -5,7 +5,7 @@ export default defineConfig({
   title: 'career-resume-skill',
   description: '先从经历与材料生成完整职业履历，再按方向或岗位生成有依据的简历。',
   srcExclude: [
-    'private-usage.md', 'private/**', 'site/**',
+    'private-usage.md', 'private/**', 'site/**', 'public/demo/**',
     'superpowers/**', 'plans/**', 'maintainers/skill-evaluation.md',
   ],
   base: process.env.DOCS_BASE || '/career-resume-skill/',
@@ -21,7 +21,7 @@ export default defineConfig({
     nav: [
       { text: '快速开始', link: '/guide/quick-start' },
       { text: '生成简历', link: '/guide/generate-resume' },
-      { text: '完整示例', link: '/example' },
+      { text: '示例', link: '/examples' },
       { text: '目录与工具', link: '/reference/directories' },
     ],
     sidebar: [
@@ -30,7 +30,9 @@ export default defineConfig({
         items: [
           { text: '快速开始：履历到简历', link: '/guide/quick-start' },
           { text: '多智能体安装与调用', link: '/guide/using-skill' },
-          { text: '完整虚构示例', link: '/example' },
+          { text: '更新到新版本', link: '/guide/upgrade-skill' },
+          { text: '五个职业示例', link: '/examples' },
+          { text: '两阶段文字示例', link: '/example' },
         ],
       },
       {
@@ -40,6 +42,8 @@ export default defineConfig({
           { text: '回顾多年项目与经历', link: '/guide/review-career' },
           { text: '补充、更正与维护', link: '/guide/update-career' },
           { text: '根据履历生成简历', link: '/guide/generate-resume' },
+          { text: '英文简历与海外投递', link: '/guide/english-resume' },
+          { text: '导出中英文 Word / PDF', link: '/guide/export-resume' },
           { text: '准备面试材料', link: '/guide/prepare-interview' },
         ],
       },
@@ -51,6 +55,7 @@ export default defineConfig({
           { text: '补充项目与技术案例', link: '/guide/project-cases' },
           { text: '本地 Git 证据与统计', link: '/guide/git-timeline' },
           { text: '生成离线履历网页', link: '/guide/generate-webpage' },
+          { text: '在网页里编辑履历', link: '/guide/workbench' },
         ],
       },
       {
@@ -60,7 +65,6 @@ export default defineConfig({
           { text: '目录与文件位置', link: '/reference/directories' },
           { text: '工具命令', link: '/reference/commands' },
           { text: '数据与事实状态', link: '/reference/data-model' },
-          { text: '安装与兼容', link: '/reference/compatibility' },
           { text: '隐私、分享与备份', link: '/guide/privacy' },
           { text: '常见问题', link: '/guide/troubleshooting' },
         ],

@@ -1,0 +1,311 @@
+{
+  "meta": {
+    "synthetic": true,
+    "title": "沈亦川 · 软件工程师（虚构示例）",
+    "subtitle": "关注企业业务前端、实时状态与工程协作，从订单流程、异常恢复到共享组件，把实现放回真实业务问题中。 全部人物、单位、经历、案例、资格与代码记录均为虚构教学示例，不属于使用者，不可用于真实投递。邮箱仅使用 example.com。",
+    "updatedAt": "2026-11-15",
+    "dateConvention": "虚构日期。源日期精度为月，时间图仅按每月首日/末日展示；简历保留原年月精度。",
+    "repositoryNote": "仅软件工程师示例有本次实际创建的虚构演示仓库。"
+  },
+  "profile": {
+    "name": "沈亦川（虚构示例）",
+    "englishName": "",
+    "headline": "软件工程师",
+    "careerStart": "2019-07-01",
+    "careerEnd": "2026-09-30"
+  },
+  "leadership": {
+    "phases": [],
+    "metrics": [],
+    "responsibilities": [],
+    "copilot": [],
+    "boundary": "未设定团队管理经历。"
+  },
+  "career": [
+    {
+      "id": "E01",
+      "organization": "示例桥屿科技",
+      "role": "前端工程师",
+      "start": "2022-03-01",
+      "end": "2026-09-30",
+      "summary": "参与企业订单与实时运营平台前端开发。 与后端定义订单及事件状态，负责页面交互、权限差异和异常恢复相关实现。 按项目构建 Node.js BFF 聚合接口，维护共享组件与针对业务分支的自动化测试。",
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "示例桥屿科技｜前端工程师｜2022.03–2026.09。参与企业订单与实时运营平台前端开发。与后端定义订单及事件状态，负责页面交互、权限差异和异常恢复相关实现。 按项目构建 Node.js BFF 聚合接口，维护共享组件与针对业务分支的自动化测试。"
+        }
+      ]
+    },
+    {
+      "id": "E02",
+      "organization": "示例原点软件",
+      "role": "前端开发",
+      "start": "2019-07-01",
+      "end": "2022-02-28",
+      "summary": "参与内部管理后台及表单页面开发。 实现查询、表单校验与权限提示，配合后端完成接口联调和页面交付。",
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "示例原点软件｜前端开发｜2019.07–2022.02。参与内部管理后台及表单页面开发。实现查询、表单校验与权限提示，配合后端完成接口联调和页面交付。"
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "P01",
+      "name": "订单协同与异常恢复",
+      "nature": "company",
+      "organization": "示例桥屿科技",
+      "category": "业务系统",
+      "status": "resume-supported",
+      "start": "2025-01-01",
+      "end": "2025-08-31",
+      "tech": [
+        "React",
+        "TypeScript",
+        "状态建模"
+      ],
+      "highlights": [
+        "与后端明确创建、待处理、成功、失败和取消状态，按状态控制操作及提示。",
+        "实现提交锁、状态查询与失败恢复，围绕超时、重复操作和状态回退补充测试；幂等结论由服务端保证。"
+      ],
+      "summary": "订单提交、审批与处理存在异步状态，重复点击和接口超时可能让页面表现与后端事实不一致。",
+      "careerIds": [
+        "E01"
+      ],
+      "collaboration": [
+        "定义状态",
+        "验证与交付"
+      ],
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "订单提交、审批与处理存在异步状态，重复点击和接口超时可能让页面表现与后端事实不一致。"
+        }
+      ]
+    },
+    {
+      "id": "P02",
+      "name": "实时运营事件工作台",
+      "nature": "company",
+      "organization": "示例桥屿科技",
+      "category": "实时业务",
+      "status": "resume-supported",
+      "start": "2024-02-01",
+      "end": "2024-10-31",
+      "tech": [
+        "WebSocket",
+        "TypeScript",
+        "自动化测试"
+      ],
+      "highlights": [
+        "按事件版本与业务标识更新视图，处理重复消息和过期事件。",
+        "实现重连、订阅恢复与页面销毁清理，补充乱序、断线和切换场景测试。"
+      ],
+      "summary": "断线重连后旧消息可能晚于新状态到达，页面需要恢复订阅，又不能用旧事件覆盖当前状态。",
+      "careerIds": [
+        "E01"
+      ],
+      "collaboration": [
+        "定义状态",
+        "验证与交付"
+      ],
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "断线重连后旧消息可能晚于新状态到达，页面需要恢复订阅，又不能用旧事件覆盖当前状态。"
+        }
+      ]
+    },
+    {
+      "id": "P03",
+      "name": "共享表单与 BFF 适配层",
+      "nature": "company",
+      "organization": "示例桥屿科技",
+      "category": "工程协作",
+      "status": "resume-supported",
+      "start": "2023-04-01",
+      "end": "2023-12-31",
+      "tech": [
+        "React",
+        "Node.js",
+        "API 适配"
+      ],
+      "highlights": [
+        "把稳定的字段与反馈机制抽为基础组件，业务规则留在使用方配置。",
+        "用 Node.js 构建聚合与字段适配接口，保留业务错误信息并编写使用说明。"
+      ],
+      "summary": "多个业务页面反复处理字段校验与不同接口结构，直接抽象全部差异会让公共组件难以维护。",
+      "careerIds": [
+        "E01"
+      ],
+      "collaboration": [
+        "定义状态",
+        "验证与交付"
+      ],
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "多个业务页面反复处理字段校验与不同接口结构，直接抽象全部差异会让公共组件难以维护。"
+        }
+      ]
+    }
+  ],
+  "repositories": [
+    {
+      "name": "order-workbench",
+      "group": "虚构演示仓库",
+      "projectId": "P01",
+      "projectIds": [
+        "P01"
+      ],
+      "projectCounts": {
+        "P01": 3
+      },
+      "start": "2026-11-15T09:01:00+08:00",
+      "end": "2026-11-15T09:03:00+08:00",
+      "count": 3,
+      "tech": [
+        "JavaScript"
+      ],
+      "dateBasis": "author_date",
+      "note": "本次在隔离临时仓库中实际创建的三条虚构教学提交，时间为示例设定，不证明任职、上线或真实成果。",
+      "activity": {
+        "monthly": {
+          "2026-11": 3
+        },
+        "modules": {
+          "docs": 2,
+          "src": 1
+        },
+        "types": {
+          "docs": 2,
+          "feat": 1
+        },
+        "activeMonths": 1,
+        "count": 3
+      }
+    }
+  ],
+  "gitEvents": [
+    {
+      "id": "order-workbench:25c73d4c246594b0f0aab7d2822ee0786668b4d1",
+      "repository": "order-workbench",
+      "sha": "25c73d4c246594b0f0aab7d2822ee0786668b4d1",
+      "authorDate": "2026-11-15T09:01:00+08:00",
+      "committerDate": "2026-11-15T09:01:00+08:00",
+      "subject": "docs: describe fictional order workbench",
+      "projectId": "P01",
+      "projectIds": [
+        "P01"
+      ],
+      "files": [
+        "README.md"
+      ]
+    },
+    {
+      "id": "order-workbench:b9de50957c083ed8dc78e7413338132f0c69bb7b",
+      "repository": "order-workbench",
+      "sha": "b9de50957c083ed8dc78e7413338132f0c69bb7b",
+      "authorDate": "2026-11-15T09:02:00+08:00",
+      "committerDate": "2026-11-15T09:02:00+08:00",
+      "subject": "feat: illustrate versioned order event handling",
+      "projectId": "P01",
+      "projectIds": [
+        "P01"
+      ],
+      "files": [
+        "order-state.js"
+      ]
+    },
+    {
+      "id": "order-workbench:3a71deb93782e4fd5d394b0549e397259da68c8d",
+      "repository": "order-workbench",
+      "sha": "3a71deb93782e4fd5d394b0549e397259da68c8d",
+      "authorDate": "2026-11-15T09:03:00+08:00",
+      "committerDate": "2026-11-15T09:03:00+08:00",
+      "subject": "docs: illustrate recovery boundaries",
+      "projectId": "P01",
+      "projectIds": [
+        "P01"
+      ],
+      "files": [
+        "recovery.md"
+      ]
+    }
+  ],
+  "presentation": {
+    "profession": "软件工程师",
+    "technical": true,
+    "theme": "sky",
+    "careerTitle": "工程经历",
+    "projectsTitle": "代表工程项目",
+    "projectsIntro": "从业务背景、真实约束、本人行动与工作结果了解代表案例（全部为虚构教学设定）。",
+    "sections": [
+      {
+        "id": "engineering",
+        "title": "工程实践",
+        "items": [
+          {
+            "title": "先对齐业务状态",
+            "subtitle": "设计与开发",
+            "summary": "用状态、触发条件和允许操作梳理交互，再确定组件与接口边界。",
+            "factIds": [
+              "X01"
+            ]
+          },
+          {
+            "title": "测试应覆盖真实分支",
+            "subtitle": "工程质量",
+            "summary": "重点验证乱序、超时、重试和权限差异，区分页面处理与服务端保障。",
+            "factIds": [
+              "X02"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "education",
+        "title": "教育背景",
+        "items": [
+          {
+            "title": "示例科技大学",
+            "subtitle": "本科 · 软件工程",
+            "period": "2015–2019",
+            "factIds": [
+              "EDU01"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "additional",
+        "title": "仓库与代码记录",
+        "items": []
+      }
+    ],
+    "order": [
+      "projects",
+      "engineering",
+      "career",
+      "education",
+      "additional"
+    ]
+  }
+}

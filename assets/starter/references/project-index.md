@@ -5,4 +5,4 @@
 | ID | 项目 | 性质 / 归属 | 状态 | 适合方向 | 项目卡 |
 |---|---|---|---|---|---|
 
-辅助记录：facts.md、backend-capabilities.md、questions-to-confirm.md、technical-challenges-to-verify.md 和 excluded/fabricated-projects.md。
+事实、能力边界、更正与排除统一记录在 facts.md，待核实事项记录在 questions-to-confirm.md。需要展开案例时再按实际材料创建项目卡或职业详细记录，不预建职业专属能力表。

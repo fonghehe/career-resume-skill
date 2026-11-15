@@ -13,9 +13,9 @@ PRIVATE_MARKER = '-'.join(('PRIVATE', 'INSTALL', 'SENTINEL'))
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 
-from install_skill import destination, install
-from package import export
-from validate import validate
+from career_resume.install_skill import destination, install
+from career_resume.package import export
+from career_resume.validate import validate
 
 
 class AgentInstallTests(unittest.TestCase):
@@ -35,13 +35,14 @@ class AgentInstallTests(unittest.TestCase):
                 target, _ = install(self.source, agent, project=self.source)
                 self.assertEqual(target, self.source / folder / 'skills/career-resume-skill')
                 self.assertEqual(validate(target)[0], [])
+                self.assertFalse((target / 'local').exists())
                 self.assertTrue((target / 'assets/templates/agent-entry-template.md').is_file())
                 self.assertNotIn(PRIVATE_MARKER,
-                                 (target / 'local/references/profile.md').read_text())
-                self.assertTrue((target / 'scripts/init_profile.py').is_file())
+                                 (target / 'assets/starter/references/profile.md').read_text())
+                self.assertTrue((target / 'scripts/career_resume/init_profile.py').is_file())
                 self.assertFalse((target / folder).exists())
                 self.assertFalse((target / '.git').exists())
-                self.assertEqual(json.loads((target / 'local/data/timeline.json').read_text())['projects'], [])
+                self.assertEqual(json.loads((target / 'assets/starter/data/timeline.json').read_text())['projects'], [])
         subprocess.run(['git', 'init', '-q', str(self.source)], check=True)
         subprocess.run(['git', '-C', str(self.source), 'add', '.'], check=True)
         tracked = subprocess.run(['git', '-C', str(self.source), 'ls-files'],
@@ -49,7 +50,7 @@ class AgentInstallTests(unittest.TestCase):
         self.assertFalse(any(path.startswith(('.agents/', '.claude/', '.trae/')) for path in tracked))
 
     def test_user_defaults_and_explicit_trae_global_path(self):
-        with patch('install_skill.Path.home', return_value=self.base):
+        with patch('career_resume.install_skill.Path.home', return_value=self.base):
             self.assertEqual(destination('codex')[0], self.base / '.agents/skills/career-resume-skill')
             self.assertEqual(destination('claude')[0], self.base / '.claude/skills/career-resume-skill')
         with self.assertRaises(ValueError):
@@ -73,7 +74,7 @@ class AgentInstallTests(unittest.TestCase):
     def test_dry_run_cli_creates_nothing_and_existing_installation_is_preserved(self):
         workspace = self.base / 'my career'
         workspace.mkdir()
-        result = subprocess.run([sys.executable, '-B', str(self.source / 'scripts/install_skill.py'),
+        result = subprocess.run([sys.executable, '-B', str(self.source / 'scripts/career.py'), 'install',
                                  '--agent', 'claude', '--project', str(workspace), '--dry-run'],
                                 capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -106,7 +107,8 @@ class AgentInstallTests(unittest.TestCase):
                 target, _ = install(self.source, agent, skills_dir=host_dir)
                 self.assertEqual(target, host_dir / 'career-resume-skill')
                 self.assertEqual(validate(target)[0], [])
-                self.assertNotIn(PRIVATE_MARKER, (target / 'local/references/profile.md').read_text())
+                self.assertFalse((target / 'local').exists())
+                self.assertNotIn(PRIVATE_MARKER, (target / 'assets/starter/references/profile.md').read_text())
         with self.assertRaises(ValueError):
             install(self.source, 'new-host-not-in-registry', project=self.source)
 
@@ -121,13 +123,13 @@ class AgentInstallTests(unittest.TestCase):
 
     def test_generic_zip_and_cli_without_agent_include_all_resources(self):
         output = self.base / 'generic.zip'
-        result = subprocess.run([sys.executable, '-B', str(self.source / 'scripts/install_skill.py'),
-                                 '--output', str(output)], capture_output=True, text=True)
+        result = subprocess.run([sys.executable, '-B', str(self.source / 'scripts/career.py'), 'install',
+                                 '--output', str(output), '--version', '1.0.0'], capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         with zipfile.ZipFile(output) as archive:
             self.assertIn('career-resume-skill/SKILL.md', archive.namelist())
             self.assertFalse(any(PRIVATE_MARKER.encode() in archive.read(name) for name in archive.namelist()))
-        result = subprocess.run([sys.executable, '-B', str(self.source / 'scripts/install_skill.py'),
+        result = subprocess.run([sys.executable, '-B', str(self.source / 'scripts/career.py'), 'install',
                                  '--skills-dir', str(self.base / 'custom skills')], capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertTrue((self.base / 'custom skills/career-resume-skill/SKILL.md').is_file())

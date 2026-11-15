@@ -22,13 +22,13 @@
 整个项目文件夹：
 
 ```sh
-python3 scripts/import_git_activity.py --folder /path/to/projects --author-email you@example.test
+python3 scripts/career.py git --folder /path/to/projects --author-email you@example.test
 ```
 
 单个仓库：
 
 ```sh
-python3 scripts/import_git_activity.py --repo /path/to/repo --author-email you@example.test --project-id P01
+python3 scripts/career.py git --repo /path/to/repo --author-email you@example.test --project-id P01
 ```
 
 路径、邮箱和项目 ID 换成自己的；历史邮箱重复 --author-email。--folder 递归寻找本地工作仓库，跳过 node_modules、构建目录和目录符号链接；同名仓库用相对目录区分。它不 fetch、clone、改分支或提交。

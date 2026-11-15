@@ -1,0 +1,243 @@
+{
+  "meta": {
+    "synthetic": true,
+    "title": "林知夏 · 小学语文教师（虚构示例）",
+    "subtitle": "以阅读、表达与形成性评价为线索，把课堂设计成学生能够参与、愿意提问、看得见进步的学习过程。 全部人物、单位、经历、案例、资格与代码记录均为虚构教学示例，不属于使用者，不可用于真实投递。邮箱仅使用 example.com。",
+    "updatedAt": "2026-11-15",
+    "dateConvention": "虚构日期。源日期精度为月，时间图仅按每月首日/末日展示；简历保留原年月精度。",
+    "repositoryNote": "仅软件工程师示例有本次实际创建的虚构演示仓库。"
+  },
+  "profile": {
+    "name": "林知夏（虚构示例）",
+    "englishName": "",
+    "headline": "小学语文教师",
+    "careerStart": "2020-09-01",
+    "careerEnd": "2026-07-31"
+  },
+  "leadership": {
+    "phases": [],
+    "metrics": [],
+    "responsibilities": [],
+    "copilot": [],
+    "boundary": "未设定团队管理经历。"
+  },
+  "career": [
+    {
+      "id": "E01",
+      "organization": "示例青禾小学",
+      "role": "语文教师",
+      "start": "2022-09-01",
+      "end": "2026-07-31",
+      "summary": "承担小学中高年级语文教学与班级阅读活动。 设计阅读、表达和习作任务，保留学生作品与观察记录，用于调整后续教学。 参与年级共备与公开课研讨，协同教师、家长支持不同学习节奏的学生。",
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "示例青禾小学｜语文教师｜2022.09–2026.07。承担小学中高年级语文教学与班级阅读活动。设计阅读、表达和习作任务，保留学生作品与观察记录，用于调整后续教学。 参与年级共备与公开课研讨，协同教师、家长支持不同学习节奏的学生。"
+        }
+      ]
+    },
+    {
+      "id": "E02",
+      "organization": "示例溪桥小学",
+      "role": "语文教师",
+      "start": "2020-09-01",
+      "end": "2022-08-31",
+      "summary": "负责日常课堂教学、作业反馈与阅读角维护。 通过小组朗读、情境讲述与书面表达任务，观察学生参与和理解情况。",
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "示例溪桥小学｜语文教师｜2020.09–2022.08。负责日常课堂教学、作业反馈与阅读角维护。通过小组朗读、情境讲述与书面表达任务，观察学生参与和理解情况。"
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "P01",
+      "name": "整本书阅读：从复述走向讨论",
+      "nature": "company",
+      "organization": "示例青禾小学",
+      "category": "阅读课程",
+      "status": "resume-supported",
+      "start": "2025-03-01",
+      "end": "2025-06-30",
+      "tech": [
+        "任务单",
+        "阅读札记",
+        "课堂观察"
+      ],
+      "highlights": [
+        "设置必读段落与自选延伸，提供人物关系图、问题卡和引用句式支架。",
+        "组织小组讨论与个人反思，将阅读札记和课堂观察整理为后续教学依据。"
+      ],
+      "summary": "学生阅读进度与理解深度不同，讨论容易变成情节复述，需要让不同起点的学生都能用文本支持观点。",
+      "careerIds": [
+        "E01"
+      ],
+      "collaboration": [
+        "搭建任务",
+        "调整教学"
+      ],
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "学生阅读进度与理解深度不同，讨论容易变成情节复述，需要让不同起点的学生都能用文本支持观点。"
+        }
+      ]
+    },
+    {
+      "id": "P02",
+      "name": "校园观察写作工作坊",
+      "nature": "company",
+      "organization": "示例青禾小学",
+      "category": "习作教学",
+      "status": "resume-supported",
+      "start": "2024-10-01",
+      "end": "2024-12-31",
+      "tech": [
+        "观察记录",
+        "同伴反馈",
+        "作品比较"
+      ],
+      "highlights": [
+        "把习作拆为观察、口述、起草与修改，使用同一场景的不同表达作为比较材料。",
+        "设计聚焦一个细节的同伴反馈卡，保留初稿与修改稿，让学生说明修改理由。"
+      ],
+      "summary": "学生能罗列事物，却较少写出具体细节；教师直接修改成稿又容易替代学生自己的表达。",
+      "careerIds": [
+        "E01"
+      ],
+      "collaboration": [
+        "搭建任务",
+        "调整教学"
+      ],
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "学生能罗列事物，却较少写出具体细节；教师直接修改成稿又容易替代学生自己的表达。"
+        }
+      ]
+    },
+    {
+      "id": "P03",
+      "name": "口语表达与家校阅读记录",
+      "nature": "company",
+      "organization": "示例青禾小学",
+      "category": "学习支持",
+      "status": "resume-supported",
+      "start": "2023-09-01",
+      "end": "2024-01-31",
+      "tech": [
+        "多样表达",
+        "家校沟通",
+        "学习档案"
+      ],
+      "highlights": [
+        "允许口述、绘图和短文字三种记录方式，用课堂分享补充家庭记录。",
+        "向家长提供开放式提问建议，在反馈中描述具体表现，避免公开比较家庭投入。"
+      ],
+      "summary": "家庭阅读条件不同，统一打卡容易让记录变成任务完成证明，无法帮助教师了解学生的真实阅读过程。",
+      "careerIds": [
+        "E01"
+      ],
+      "collaboration": [
+        "搭建任务",
+        "调整教学"
+      ],
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "家庭阅读条件不同，统一打卡容易让记录变成任务完成证明，无法帮助教师了解学生的真实阅读过程。"
+        }
+      ]
+    }
+  ],
+  "repositories": [],
+  "gitEvents": [],
+  "presentation": {
+    "profession": "小学语文教师",
+    "technical": false,
+    "theme": "sage",
+    "careerTitle": "教学经历",
+    "projectsTitle": "课堂实践",
+    "projectsIntro": "从业务背景、真实约束、本人行动与工作结果了解代表案例（全部为虚构教学设定）。",
+    "sections": [
+      {
+        "id": "courses",
+        "title": "课程与教研",
+        "items": [
+          {
+            "title": "阅读与表达任务包",
+            "subtitle": "课程作品",
+            "summary": "阅读讨论问题卡、校园观察任务单与习作反馈卡，强调任务目标、学生行动和反馈方式的对应。",
+            "factIds": [
+              "X01"
+            ]
+          },
+          {
+            "title": "共备记录与课堂反思",
+            "subtitle": "教研实践",
+            "summary": "保留教学设计、课堂观察和调整理由，供同年级教师交流，不将个别课堂观察推断为普遍教学效果。",
+            "factIds": [
+              "X02"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "education",
+        "title": "教育背景",
+        "items": [
+          {
+            "title": "示例师范学院",
+            "subtitle": "本科 · 汉语言文学（师范）",
+            "period": "2016–2020",
+            "factIds": [
+              "EDU01"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "additional",
+        "title": "资格与培训",
+        "items": [
+          {
+            "title": "小学语文教师资格（虚构示例资格，无证书编号）",
+            "factIds": [
+              "X03"
+            ]
+          },
+          {
+            "title": "参加形成性评价与阅读教学专题研修（虚构示例）",
+            "factIds": [
+              "X03"
+            ]
+          }
+        ]
+      }
+    ],
+    "order": [
+      "projects",
+      "courses",
+      "career",
+      "education",
+      "additional"
+    ]
+  }
+}

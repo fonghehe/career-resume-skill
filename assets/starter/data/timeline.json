@@ -1,10 +1,10 @@
 {
   "meta": {
-    "title": "项目与职业时间线",
-    "subtitle": "请先填写自己的资料",
+    "title": "个人职业履历",
+    "subtitle": "从已提供的工作、学习与实践记录开始",
     "updatedAt": "",
     "dateConvention": "保留用户实际提供的日期精度，不推算未知日期。",
-    "repositoryNote": "Git 活动不代表任职日期或独立贡献。"
+    "repositoryNote": ""
   },
   "profile": {
     "name": "",
@@ -22,5 +22,11 @@
   },
   "career": [],
   "projects": [],
-  "repositories": []
+  "repositories": [],
+  "presentation": {
+    "careerTitle": "工作与实践经历",
+    "projectsTitle": "代表案例",
+    "sections": [],
+    "order": []
+  }
 }

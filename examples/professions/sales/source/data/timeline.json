@@ -1,0 +1,243 @@
+{
+  "meta": {
+    "synthetic": true,
+    "title": "陈予安 · 企业客户销售（虚构示例）",
+    "subtitle": "服务企业数字化采购场景，重视需求澄清、方案边界与交付衔接，让客户与内部团队对同一个目标形成共识。 全部人物、单位、经历、案例、资格与代码记录均为虚构教学示例，不属于使用者，不可用于真实投递。邮箱仅使用 example.com。",
+    "updatedAt": "2026-11-15",
+    "dateConvention": "虚构日期。源日期精度为月，时间图仅按每月首日/末日展示；简历保留原年月精度。",
+    "repositoryNote": "仅软件工程师示例有本次实际创建的虚构演示仓库。"
+  },
+  "profile": {
+    "name": "陈予安（虚构示例）",
+    "englishName": "",
+    "headline": "企业客户销售",
+    "careerStart": "2018-07-01",
+    "careerEnd": "2026-09-30"
+  },
+  "leadership": {
+    "phases": [],
+    "metrics": [],
+    "responsibilities": [],
+    "copilot": [],
+    "boundary": "未设定团队管理经历。"
+  },
+  "career": [
+    {
+      "id": "E01",
+      "organization": "示例云桥企业服务",
+      "role": "企业客户经理",
+      "start": "2021-06-01",
+      "end": "2026-09-30",
+      "summary": "面向连锁零售与制造企业，开展企业服务产品销售及存量客户跟进。 记录关键角色、使用场景、采购节奏和待确认条件，组织内部资源回应客户需求。 协调售前演示、试用反馈及交付交接，跟踪范围变化并向客户说明边界。",
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "示例云桥企业服务｜企业客户经理｜2021.06–2026.09。面向连锁零售与制造企业，开展企业服务产品销售及存量客户跟进。记录关键角色、使用场景、采购节奏和待确认条件，组织内部资源回应客户需求。 协调售前演示、试用反馈及交付交接，跟踪范围变化并向客户说明边界。"
+        }
+      ]
+    },
+    {
+      "id": "E02",
+      "organization": "示例远帆商务服务",
+      "role": "销售专员",
+      "start": "2018-07-01",
+      "end": "2021-05-31",
+      "summary": "承担客户线索跟进、基础方案介绍与回访。 整理客户沟通记录并维护 CRM，协助客户经理准备演示与合同流程材料。",
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "示例远帆商务服务｜销售专员｜2018.07–2021.05。承担客户线索跟进、基础方案介绍与回访。整理客户沟通记录并维护 CRM，协助客户经理准备演示与合同流程材料。"
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "P01",
+      "name": "连锁企业的门店协同试用",
+      "nature": "company",
+      "organization": "示例云桥企业服务",
+      "category": "连锁零售",
+      "status": "resume-supported",
+      "start": "2025-03-01",
+      "end": "2025-07-31",
+      "tech": [
+        "需求访谈",
+        "场景演示",
+        "试用反馈"
+      ],
+      "highlights": [
+        "分别访谈总部与门店代表，把需求整理为试用场景、必须条件和可后续处理事项。",
+        "协调售前按实际任务演示，汇总试用反馈并与交付团队明确配置及培训范围。"
+      ],
+      "summary": "总部关注可管理性，门店关注操作负担；如果直接演示全部功能，双方很难判断是否解决了同一个问题。",
+      "careerIds": [
+        "E01"
+      ],
+      "collaboration": [
+        "组织方案",
+        "衔接交付"
+      ],
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "总部关注可管理性，门店关注操作负担；如果直接演示全部功能，双方很难判断是否解决了同一个问题。"
+        }
+      ]
+    },
+    {
+      "id": "P02",
+      "name": "制造企业的多部门采购沟通",
+      "nature": "company",
+      "organization": "示例云桥企业服务",
+      "category": "制造行业",
+      "status": "resume-supported",
+      "start": "2024-04-01",
+      "end": "2024-10-31",
+      "tech": [
+        "角色梳理",
+        "方案管理",
+        "事项跟进"
+      ],
+      "highlights": [
+        "建立角色与事项清单，分别记录业务目标、技术待确认项和采购材料要求。",
+        "组织售前参与技术澄清，保留会议结论与未决事项，按客户流程推进跟进。"
+      ],
+      "summary": "业务、IT 与采购部门的评估顺序和材料要求不同，信息反复转述容易造成对方案范围的理解偏差。",
+      "careerIds": [
+        "E01"
+      ],
+      "collaboration": [
+        "组织方案",
+        "衔接交付"
+      ],
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "业务、IT 与采购部门的评估顺序和材料要求不同，信息反复转述容易造成对方案范围的理解偏差。"
+        }
+      ]
+    },
+    {
+      "id": "P03",
+      "name": "存量客户的使用问题回访",
+      "nature": "company",
+      "organization": "示例云桥企业服务",
+      "category": "客户维护",
+      "status": "resume-supported",
+      "start": "2023-08-01",
+      "end": "2023-12-31",
+      "tech": [
+        "客户回访",
+        "CRM",
+        "跨团队协作"
+      ],
+      "highlights": [
+        "按问题类型整理使用反馈，分别协调客服、培训和产品团队回应。",
+        "向客户同步处理状态及可提供范围，将新增需求转入正式评估流程。"
+      ],
+      "summary": "客户反馈混合了使用问题、培训需求和新增功能诉求，需要区分处理渠道，避免用销售承诺替代产品结论。",
+      "careerIds": [
+        "E01"
+      ],
+      "collaboration": [
+        "组织方案",
+        "衔接交付"
+      ],
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "客户反馈混合了使用问题、培训需求和新增功能诉求，需要区分处理渠道，避免用销售承诺替代产品结论。"
+        }
+      ]
+    }
+  ],
+  "repositories": [],
+  "gitEvents": [],
+  "presentation": {
+    "profession": "企业客户销售",
+    "technical": false,
+    "theme": "peach",
+    "careerTitle": "客户服务经历",
+    "projectsTitle": "代表客户方案",
+    "projectsIntro": "从业务背景、真实约束、本人行动与工作结果了解代表案例（全部为虚构教学设定）。",
+    "sections": [
+      {
+        "id": "services",
+        "title": "服务范围与合作方式",
+        "items": [
+          {
+            "title": "行业服务范围",
+            "subtitle": "连锁零售 · 制造",
+            "summary": "关注总部与一线协同、多角色采购及上线培训衔接，以真实使用场景组织方案。",
+            "factIds": [
+              "X01"
+            ]
+          },
+          {
+            "title": "合作过程可追踪",
+            "subtitle": "需求到交付",
+            "summary": "每轮沟通保留结论、待确认项、责任方和下一步；价格、功能和交付承诺遵循团队已确认范围。",
+            "factIds": [
+              "X02"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "education",
+        "title": "教育背景",
+        "items": [
+          {
+            "title": "示例城市商学院",
+            "subtitle": "本科 · 市场营销",
+            "period": "2014–2018",
+            "factIds": [
+              "EDU01"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "additional",
+        "title": "客户沟通材料",
+        "items": [
+          {
+            "title": "需求访谈提纲、演示场景清单与试用反馈表",
+            "factIds": [
+              "X03"
+            ]
+          },
+          {
+            "title": "方案版本记录、采购事项清单及交付交接表",
+            "factIds": [
+              "X03"
+            ]
+          }
+        ]
+      }
+    ],
+    "order": [
+      "projects",
+      "services",
+      "career",
+      "education",
+      "additional"
+    ]
+  }
+}

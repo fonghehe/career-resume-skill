@@ -1,4 +1,4 @@
 interface:
   display_name: "career-resume-skill · 履历与简历"
-  short_description: "先从经历与材料建立可维护的职业履历，再按方向或岗位生成有事实依据的简历"
-  default_prompt: "使用 $career-resume-skill，先根据我提供的经历与材料生成可维护的文字履历，后续按我的方向或岗位要求从履历生成简历。"
+  short_description: "适用于不同职业的履历维护、个人网页与中英文简历生成导出"
+  default_prompt: "使用 $career-resume-skill，根据我实际提供的工作、学习和实践材料建立可维护履历，按需生成个人网页和中英文简历，不要求项目或代码经历。"

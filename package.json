@@ -4,16 +4,30 @@
   "type": "module",
   "packageManager": "pnpm@11.16.0",
   "engines": {
-    "node": ">=22"
+    "node": "24.x",
+    "pnpm": "11.16.0"
   },
   "scripts": {
-    "docs:demo": "python3 scripts/create_demo.py --docs",
+    "career": "python3 -B scripts/career.py",
+    "workbench": "python3 -B scripts/career.py workbench",
+    "workbench:demo": "python3 -B scripts/career.py workbench --demo",
+    "doctor": "python3 -B scripts/career.py doctor",
+    "doctor:smoke": "python3 -B scripts/career.py doctor --smoke",
+    "test": "python3 -B -m unittest discover -s tests -v",
+    "check": "python3 -B tools/check.py",
+    "check:public-index": "python3 -B tools/check_public_index.py",
+    "package": "python3 -B tools/release.py --skillhub",
+    "package:runtime": "python3 -B tools/release.py",
+    "package:source": "python3 -B scripts/career.py package --public-dir",
+    "docs:demo": "python3 -B scripts/career.py demo --docs",
     "docs:dev": "pnpm docs:demo && vitepress dev docs --host 127.0.0.1",
     "docs:build": "pnpm docs:demo && vitepress build docs",
-    "docs:preview": "vitepress preview docs --port 4173"
+    "docs:preview": "vitepress preview docs --host 127.0.0.1 --port 4173"
   },
   "devDependencies": {
-    "@types/node": "^26.6.4",
+    "@types/node": "^24.19.2",
     "vitepress": "1.6.4"
-  }
+  },
+  "description": "Source tools and documentation for the career-resume-skill Agent Skill",
+  "license": "MIT"
 }

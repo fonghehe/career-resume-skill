@@ -10,13 +10,37 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from build_timeline import build, validate_data
-from create_demo import create
+from career_resume.build_timeline import build, validate_data
+from career_resume.create_demo import create
 
 
 class ProjectTimelineTests(unittest.TestCase):
     def setUp(self):
-        self.data = json.loads((ROOT / 'assets/examples/career-demo/data/timeline.json').read_text())
+        self.data = json.loads((ROOT / 'examples/career-demo/data/timeline.json').read_text())
+
+    def test_svn_working_copy_evidence_is_separate_from_git_counts(self):
+        data = copy.deepcopy(self.data)
+        data['projects'][0]['svnWorkingCopy'] = {
+            'name': 'fictional-svn', 'revision': 42, 'author': 'demo-author',
+            'fileCount': 7, 'directoryCount': 3, 'visibleRevisionCount': 4,
+            'start': '2023-01-01T10:00:00+08:00', 'end': '2023-02-01T10:00:00+08:00',
+            'historyComplete': False,
+        }
+        validate_data(data)
+        self.assertEqual(sum(r['count'] for r in data['repositories']), 14)
+        for key, value in [('fileCount', True), ('fileCount', -1), ('revision', '42'),
+                           ('historyComplete', True), ('commitCount', 4),
+                           ('start', 'not-a-date'), ('end', '2020-01-01T00:00:00Z')]:
+            with self.subTest(key=key, value=value):
+                bad = copy.deepcopy(data)
+                bad['projects'][0]['svnWorkingCopy'][key] = value
+                with self.assertRaises(ValueError):
+                    validate_data(bad)
+        for value in (None, [], 'svn'):
+            bad = copy.deepcopy(data)
+            bad['projects'][0]['svnWorkingCopy'] = value
+            with self.assertRaises(ValueError):
+                validate_data(bad)
 
     def test_demo_is_complete_and_separately_marked_fictional(self):
         validate_data(self.data)

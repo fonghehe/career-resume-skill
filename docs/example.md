@@ -1,6 +1,12 @@
+<script setup>
+import { withBase } from 'vitepress'
+</script>
+
 # 完整虚构示例：履历、简历与网页
 
-两阶段文字示例保存在仓库的 `assets/examples/resume-demo/`：`request.md` 经历输入 → `career.md` 完整履历 → `resume.zh-CN.md` 简历正文与 `match-report.md` 依据报告。它们来自独立的虚构工单项目，用于展示事实保留和岗位选材；下方网页演示另用一组虚构数据。
+两阶段文字示例保存在仓库的 `examples/resume-demo/`：`request.md` 经历输入 → `career.md` 完整履历 → `resume.zh-CN.md` 简历正文与 `match-report.md` 依据报告。它们来自独立的虚构工单项目，用于展示事实保留和岗位选材；下方网页演示另用一组虚构数据。
+
+想看教师、设计师、销售、财务和软件工程师五种职业的完整履历、简历与个人网页，见[五个职业的示例](examples.md)。
 
 ## 文字示例：从完整记录到岗位版本
 
@@ -31,13 +37,26 @@
 
 实际使用见[生成第一份履历](guide/first-library.md)与[根据履历生成简历](guide/generate-resume.md)。
 
+## 同一份虚构履历还能做什么
+
+| 操作 | 示例结果 |
+|---|---|
+| 导出 Word | 生成中英文单栏 DOCX，保留章节顺序和虚构提示；中文用主题色版式，英文用黑白国际版式（`--layout international`）。见[英文简历与海外投递](guide/english-resume.md)。 |
+| 回顾 2025 年第四季度 | E01 支持这段期间的任职。E01-A 未提供工单功能的完成月份，单列为日期待确认，待补功能发布记录。 |
+| 检查更正影响 | 假设用户更正 E01 的正式职称，依据报告指向「工作经历」的任职条目，需要核对该标题。 |
+| 比较两份 JD | React 工单后台岗位由 E01-A 直接支持；Java 后端岗位的独立服务端开发要求仍是缺口，E01-B 仅能支持联调协作。 |
+
+运行 `python3 scripts/career.py demo` 后，在 `local/output/demo/resume/` 查看虚构输入、完整文字履历、依据报告、中英文 Word、季度回顾和岗位对比。再次运行可用 `--output 新目录`。
+
+想试着编辑下面这些任职和项目，运行 `python3 scripts/career.py workbench --demo`。可以修改、保存、刷新检查，再从修改历史恢复。详见[网页编辑教程](guide/workbench.md)。
+
 ## 可选网页示例
 
 另一组网页示例包含 2 家公司、3 个任职 / 职级阶段、3 个工程项目、3 个仓库和 14 条本人署名 Commit。公司、职级、阶段、SHA 和提交均为虚构演示，不是真实采集结果。
 
-<a href="./demo/timeline.html" target="_blank" rel="noreferrer">打开完整项目履历 ↗</a>
+<a :href="withBase('/demo/timeline.html')" target="_blank" rel="noreferrer">打开完整项目履历 ↗</a>
 
-<iframe src="./demo/timeline.html" title="虚构公司、职级、项目与本人 Commit 统计" style="width:100%;height:800px;border:1px solid #e5e7eb;border-radius:16px;margin-top:20px" loading="lazy"></iframe>
+<iframe :src="withBase('/demo/timeline.html')" title="虚构公司、职级、项目与本人 Commit 统计" style="width:100%;height:800px;border:1px solid #e5e7eb;border-radius:16px;margin-top:20px" loading="lazy"></iframe>
 
 可以查看：
 
@@ -46,4 +65,4 @@
 - 各仓库本人提交活动区间与数量。
 - 展开具体提交，筛选项目或仓库，查看原始主题、SHA 和双日期。
 
-[快速开始](guide/quick-start.md)可直接从口述材料生成文字履历；旧简历和代码目录按需提供。本地演示用 `python3 scripts/create_demo.py` 生成 `local/output/demo/showcase/project-timeline.html`，不读取或改变个人档案。
+[快速开始](guide/quick-start.md)可直接从口述材料生成文字履历；旧简历和代码目录按需提供。本地演示用 `python3 scripts/career.py demo` 生成 `local/output/demo/showcase/project-timeline.html`，不读取或改变个人档案。

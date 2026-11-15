@@ -9,9 +9,9 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from build_career import build
-from init_profile import initialize
-from package import export
+from career_resume.build_career import build
+from career_resume.init_profile import initialize
+from career_resume.package import export
 
 
 class WrittenCareerTests(unittest.TestCase):
@@ -153,7 +153,7 @@ class WrittenCareerTests(unittest.TestCase):
         data = json.loads(path.read_text())
         data['meta']['synthetic'] = True
         path.write_text(json.dumps(data))
-        result = subprocess.run([sys.executable, '-B', str(self.root / 'scripts/build_career.py')],
+        result = subprocess.run([sys.executable, '-B', str(self.root / 'scripts/career.py'), 'build'],
                                 cwd=self.temp.name, text=True, capture_output=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn('虚构教学履历', (self.profile / 'output/career/career.md').read_text())

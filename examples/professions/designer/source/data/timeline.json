@@ -1,0 +1,243 @@
+{
+  "meta": {
+    "synthetic": true,
+    "title": "许望舒 · 产品设计师（虚构示例）",
+    "subtitle": "关注企业服务与日常服务中的信息结构、任务路径和协作边界，让设计方案能够解释、验证并顺利交付。 全部人物、单位、经历、案例、资格与代码记录均为虚构教学示例，不属于使用者，不可用于真实投递。邮箱仅使用 example.com。",
+    "updatedAt": "2026-11-15",
+    "dateConvention": "虚构日期。源日期精度为月，时间图仅按每月首日/末日展示；简历保留原年月精度。",
+    "repositoryNote": "仅软件工程师示例有本次实际创建的虚构演示仓库。"
+  },
+  "profile": {
+    "name": "许望舒（虚构示例）",
+    "englishName": "",
+    "headline": "产品设计师",
+    "careerStart": "2019-07-01",
+    "careerEnd": "2026-08-31"
+  },
+  "leadership": {
+    "phases": [],
+    "metrics": [],
+    "responsibilities": [],
+    "copilot": [],
+    "boundary": "未设定团队管理经历。"
+  },
+  "career": [
+    {
+      "id": "E01",
+      "organization": "示例序光数字科技",
+      "role": "产品设计师",
+      "start": "2022-04-01",
+      "end": "2026-08-31",
+      "summary": "参与企业服务产品的流程、界面与设计规范建设。 与产品、客服及研发梳理用户任务，覆盖正常、空白、异常和权限受限状态。 维护组件使用说明与交付清单，参与上线前设计走查并跟进问题闭环。",
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "示例序光数字科技｜产品设计师｜2022.04–2026.08。参与企业服务产品的流程、界面与设计规范建设。与产品、客服及研发梳理用户任务，覆盖正常、空白、异常和权限受限状态。 维护组件使用说明与交付清单，参与上线前设计走查并跟进问题闭环。"
+        }
+      ]
+    },
+    {
+      "id": "E02",
+      "organization": "示例拾页设计工作室",
+      "role": "UI 设计师",
+      "start": "2019-07-01",
+      "end": "2022-03-31",
+      "summary": "为预约、会员与内容服务产品制作原型及界面。 参与需求讨论、界面设计与开发标注，逐步承担关键任务路径的体验设计。",
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "示例拾页设计工作室｜UI 设计师｜2019.07–2022.03。为预约、会员与内容服务产品制作原型及界面。参与需求讨论、界面设计与开发标注，逐步承担关键任务路径的体验设计。"
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "P01",
+      "name": "多角色采购审批工作台",
+      "nature": "company",
+      "organization": "示例序光数字科技",
+      "category": "企业服务",
+      "status": "resume-supported",
+      "start": "2025-02-01",
+      "end": "2025-07-31",
+      "tech": [
+        "任务分析",
+        "信息架构",
+        "Figma"
+      ],
+      "highlights": [
+        "按角色梳理任务与决策信息，将申请、审批记录和待补材料组织为同一任务视图。",
+        "用可点击原型走查正常、退回和权限受限路径，补充状态文案与开发标注。"
+      ],
+      "summary": "申请人、审批人和采购人员关注的信息不同，跨角色处理退回与补充材料时容易丢失上下文。",
+      "careerIds": [
+        "E01"
+      ],
+      "collaboration": [
+        "梳理路径",
+        "协作交付"
+      ],
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "申请人、审批人和采购人员关注的信息不同，跨角色处理退回与补充材料时容易丢失上下文。"
+        }
+      ]
+    },
+    {
+      "id": "P02",
+      "name": "预约服务的改期与取消体验",
+      "nature": "company",
+      "organization": "示例序光数字科技",
+      "category": "服务体验",
+      "status": "resume-supported",
+      "start": "2024-05-01",
+      "end": "2024-09-30",
+      "tech": [
+        "服务蓝图",
+        "原型验证",
+        "状态设计"
+      ],
+      "highlights": [
+        "把规则提示放在决策发生的位置，明确原预约、新时段和费用说明的层级。",
+        "设计无可约时段、规则冲突和重复提交状态，与客服及开发共同核对文案。"
+      ],
+      "summary": "可约时段、服务人员与取消规则互相约束，用户在改期时需要清楚了解哪些信息会变化。",
+      "careerIds": [
+        "E01"
+      ],
+      "collaboration": [
+        "梳理路径",
+        "协作交付"
+      ],
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "可约时段、服务人员与取消规则互相约束，用户在改期时需要清楚了解哪些信息会变化。"
+        }
+      ]
+    },
+    {
+      "id": "P03",
+      "name": "组件规范与设计交付协作",
+      "nature": "company",
+      "organization": "示例序光数字科技",
+      "category": "设计系统",
+      "status": "resume-supported",
+      "start": "2023-03-01",
+      "end": "2023-11-30",
+      "tech": [
+        "组件规范",
+        "设计走查",
+        "版本记录"
+      ],
+      "highlights": [
+        "从现有界面归纳表单、筛选和反馈组件，标注适用条件与例外场景。",
+        "与研发逐项核对状态和交互，记录版本变更并提供交付自查清单。"
+      ],
+      "summary": "相近界面使用不同的间距、字段和错误提示，设计与开发难以判断哪些是必要差异。",
+      "careerIds": [
+        "E01"
+      ],
+      "collaboration": [
+        "梳理路径",
+        "协作交付"
+      ],
+      "sources": [
+        {
+          "field": "summary",
+          "label": "SYN01 · 虚构职业设定",
+          "status": "resume-supported",
+          "path": "references/sources/SYN01.md",
+          "excerpt": "相近界面使用不同的间距、字段和错误提示，设计与开发难以判断哪些是必要差异。"
+        }
+      ]
+    }
+  ],
+  "repositories": [],
+  "gitEvents": [],
+  "presentation": {
+    "profession": "产品设计师",
+    "technical": false,
+    "theme": "lavender",
+    "careerTitle": "设计经历",
+    "projectsTitle": "精选作品",
+    "projectsIntro": "从业务背景、真实约束、本人行动与工作结果了解代表案例（全部为虚构教学设定）。",
+    "sections": [
+      {
+        "id": "practice",
+        "title": "设计方法与交付",
+        "items": [
+          {
+            "title": "先明确任务，再组织界面",
+            "subtitle": "体验方法",
+            "summary": "把角色、目标、输入与决策条件写清楚，再决定信息层级与交互形式。",
+            "factIds": [
+              "X01"
+            ]
+          },
+          {
+            "title": "把边界场景留在交付中",
+            "subtitle": "协作方法",
+            "summary": "原型和标注同时覆盖空白、加载、失败、长文本与权限限制，避免把关键决定留给开发临场猜测。",
+            "factIds": [
+              "X02"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "education",
+        "title": "教育背景",
+        "items": [
+          {
+            "title": "示例设计学院",
+            "subtitle": "本科 · 视觉传达设计",
+            "period": "2015–2019",
+            "factIds": [
+              "EDU01"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "additional",
+        "title": "作品交付物",
+        "items": [
+          {
+            "title": "角色任务图、流程图与可点击原型",
+            "factIds": [
+              "X03"
+            ]
+          },
+          {
+            "title": "组件状态说明、开发标注与设计走查清单",
+            "factIds": [
+              "X03"
+            ]
+          }
+        ]
+      }
+    ],
+    "order": [
+      "projects",
+      "practice",
+      "career",
+      "education",
+      "additional"
+    ]
+  }
+}

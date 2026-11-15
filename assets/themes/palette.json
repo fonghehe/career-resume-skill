@@ -1,0 +1,10 @@
+{
+  "neutral": {"page": "FFFFFF", "title": "000000", "body": "333333", "muted": "444444"},
+  "themes": {
+    "sky": {"name": "晴空蓝", "accent": "2E79A6", "background": "EDF6FC"},
+    "sage": {"name": "鼠尾草绿", "accent": "4B7863", "background": "F0F7F2"},
+    "lavender": {"name": "雾紫", "accent": "77639E", "background": "F5F2FA"},
+    "sea": {"name": "海盐青", "accent": "087F8C", "background": "EEF9FA"},
+    "peach": {"name": "杏桃橙", "accent": "A85E45", "background": "FFF3EC"}
+  }
+}

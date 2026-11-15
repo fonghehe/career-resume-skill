@@ -31,11 +31,11 @@
 事实先更新到 `local/references/` 的档案、事实记录、项目卡和来源索引，再聚合到 `local/output/career/career.md`。可手动运行：
 
 ```sh
-python3 scripts/build_career.py
-python3 scripts/validate.py
+python3 scripts/career.py build
+python3 scripts/career.py validate
 ```
 
-网页已经使用时，同步必要展示摘要后运行 `python3 scripts/build_timeline.py`，再校验。校验可能提示旧网页过期，修正源数据并重建即可，不能从旧网页倒灌事实。
+网页已经使用时，同步必要展示摘要后运行 `python3 scripts/career.py web`，再校验。校验可能提示旧网页过期，修正源数据并重建即可，不能从旧网页倒灌事实。
 
 ## 让简历跟着更新
 
@@ -50,6 +50,6 @@ python3 scripts/validate.py
 
 需要更新代码证据时提供授权项目目录和本人署名范围，工具只读取本地记录，归属不明先独立保留。操作见[Git 统计](git-timeline.md)。
 
-`update_profile.py` 的更新历史与撤回只覆盖展示 JSON，不包含另行修改的 Markdown 和原始附件。撤回整个事实更新需要对应源记录备份，不能只撤回 JSON 后认为履历也恢复了。
+`career.py update` 的更新历史与撤回只覆盖展示 JSON，不包含另行修改的 Markdown 和原始附件。撤回整个事实更新需要对应源记录备份，不能只撤回 JSON 后认为履历也恢复了。
 
 升级、迁移或准备分享前备份完整 `local/`；结构化私人 ZIP 只包含选定记录，不包含全部原件和简历产物。分享范围由你选择，见[隐私与备份](privacy.md)。

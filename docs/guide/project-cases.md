@@ -32,7 +32,7 @@
 
 每条贡献保存：状态、本人动作、原因或机制、结果、来源与确认日期。条目可以使用 `P01-A`；它的前缀必须属于当前项目。
 
-技术案例可以放在 `local/references/career/cases/P01-reconnect.md`，并从履历入口或项目卡链接该案例。`build_career.py` 会递归收录 `local/references/career/` 中的 Markdown 正文，补充后重建即可看到更新。至少恢复：案例名称、时间、项目、业务背景、技术背景、问题、原因、方案、选择原因、备选、取舍、结果和重新做一次的改进。不知道就写【待补充】，来源不足时写【暂无外部证据】。
+技术案例可以放在 `local/references/career/cases/P01-reconnect.md`，并从履历入口或项目卡链接该案例。`career.py build` 会递归收录 `local/references/career/` 中的 Markdown 正文，补充后重建即可看到更新。至少恢复：案例名称、时间、项目、业务背景、技术背景、问题、原因、方案、选择原因、备选、取舍、结果和重新做一次的改进。不知道就写【待补充】，来源不足时写【暂无外部证据】。
 
 ```text
 请把本轮确认更新到 P01 项目卡和技术案例库，附来源与确认日期。
@@ -49,4 +49,4 @@
 
 职责成长也根据实际变化记录：完成需求、独立负责模块、解决复杂问题、承担技术决策、跨团队设计。正式 Title 不能自动证明相应职责。
 
-完成一个项目后，更新事实与索引，用 `scripts/build_career.py` 重建文字履历。需要网页时按[生成个人网页](generate-webpage.md)刷新展示；若有代码记录，再按[Git 活动](git-timeline.md)补证据。之后可[根据履历生成简历](generate-resume.md)。
+完成一个项目后，更新事实与索引，用 `scripts/career.py build` 重建文字履历。需要网页时按[生成个人网页](generate-webpage.md)刷新展示；若有代码记录，再按[Git 活动](git-timeline.md)补证据。之后可[根据履历生成简历](generate-resume.md)。

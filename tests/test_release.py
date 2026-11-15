@@ -11,9 +11,9 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 
-from build_timeline import build, validate_data
-from package import export
-from validate import validate
+from career_resume.build_timeline import build, validate_data
+from career_resume.package import MAX_RUNTIME_FILES, archive_statistics, export
+from career_resume.validate import validate
 
 
 class ReleaseTests(unittest.TestCase):
@@ -56,12 +56,80 @@ class ReleaseTests(unittest.TestCase):
         with zipfile.ZipFile(archive_path) as archive:
             self.assertTrue(all(name.startswith('career-resume-skill/') for name in archive.namelist()))
             self.assertFalse(any(sentinel.encode() in archive.read(name) for name in archive.namelist()))
-            self.assertIn('career-resume-skill/LICENSE', archive.namelist())
+            self.assertNotIn('career-resume-skill/LICENSE', archive.namelist())
+            self.assertNotIn('career-resume-skill/assets/starter/gitignore.template', archive.namelist())
+            self.assertFalse(any(name.endswith('.png') for name in archive.namelist()))
+            self.assertEqual(archive.read('career-resume-skill/LICENSE.md'),
+                             (self.public / 'LICENSE').read_bytes())
+            self.assertEqual(archive.read('career-resume-skill/assets/starter/gitignore.txt'),
+                             (self.public / 'assets/starter/gitignore.template').read_bytes())
             target = self.base / 'unzipped'
             archive.extractall(target)
         self.assertEqual(validate(target / 'career-resume-skill')[0], [])
         after = {rel: hashlib.sha256((self.public / rel).read_bytes()).hexdigest() for rel in files}
         self.assertEqual(before, after)
+
+    def test_runtime_export_rejects_unsupported_file_type_before_writing(self):
+        from career_resume.package import public_entries
+        from unittest.mock import patch
+        entries = public_entries(self.public)
+        entries = {'SKILL.md': entries['SKILL.md'], 'extra.template': entries['SKILL.md']}
+        output = self.base / 'invalid-type.zip'
+        with patch('career_resume.package.runtime_entries', return_value=entries):
+            with self.assertRaisesRegex(ValueError, 'file type'):
+                export(self.public, output)
+        self.assertFalse(output.exists())
+
+    def test_runtime_export_rejects_upload_count_and_size_limits(self):
+        from unittest.mock import patch
+        small = self.base / 'small.md'
+        small.write_text('fictional fixture')
+        output = self.base / 'too-many.zip'
+        entries = {f'file-{index}.md': small for index in range(201)}
+        with patch('career_resume.package.runtime_entries', return_value=entries):
+            with self.assertRaisesRegex(ValueError, '200'):
+                export(self.public, output)
+        self.assertFalse(output.exists())
+        large = self.base / 'large.md'
+        with large.open('wb') as stream:
+            stream.truncate(10 * 1024 * 1024 + 1)
+        with patch('career_resume.package.runtime_entries', return_value={'SKILL.md': large}):
+            with self.assertRaisesRegex(ValueError, '10 MiB'):
+                export(self.public, output)
+        self.assertFalse(output.exists())
+
+    def test_exact_file_limit_exports_and_one_more_is_rejected(self):
+        from career_resume.bundle import runtime_entries
+        from unittest.mock import patch
+        entries = runtime_entries(self.public)
+        filler = self.base / 'fictional-padding.md'
+        filler.write_text('# Fictional packaging test fixture\n', encoding='utf-8')
+        for index in range(MAX_RUNTIME_FILES - len(entries)):
+            entries[f'padding-{index}.md'] = filler
+        accepted = self.base / 'exact-limit.zip'
+        with patch('career_resume.package.runtime_entries', return_value=entries):
+            self.assertEqual(export(self.public, accepted), MAX_RUNTIME_FILES)
+        self.assertEqual(archive_statistics(accepted)['fileCount'], MAX_RUNTIME_FILES)
+        entries['one-more.md'] = filler
+        rejected = self.base / 'over-limit.zip'
+        with patch('career_resume.package.runtime_entries', return_value=entries), self.assertRaisesRegex(ValueError, '201'):
+            export(self.public, rejected)
+        self.assertFalse(rejected.exists())
+
+    def test_finished_archive_measurement_excludes_directories_and_checks_limits(self):
+        target = self.base / 'measured.zip'
+        with zipfile.ZipFile(target, 'w', zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr('career-resume-skill/', '')
+            archive.writestr('career-resume-skill/SKILL.md', 'fictional')
+        stats = archive_statistics(target)
+        self.assertEqual(stats['fileCount'], 1)
+        self.assertEqual(stats['uncompressedBytes'], len(b'fictional'))
+        self.assertEqual(stats['zipBytes'], target.stat().st_size)
+        with zipfile.ZipFile(target, 'a', zipfile.ZIP_DEFLATED) as archive:
+            for index in range(MAX_RUNTIME_FILES):
+                archive.writestr(f'career-resume-skill/extra-{index}.md', 'fictional')
+        with self.assertRaisesRegex(ValueError, '201'):
+            archive_statistics(target)
 
     def test_personal_backup_requires_explicit_mode_and_keeps_data(self):
         sentinel = 'PERSONAL-BACKUP-SENTINEL'

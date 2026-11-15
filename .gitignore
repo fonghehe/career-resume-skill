@@ -1,6 +1,10 @@
 # Local career data; only the shared workflow is public.
 /references/*
 !/references/career-workflow.md
+!/references/fact-contract.md
+!/references/resume-style.md
+!/references/english-resume.md
+!/references/profession-workflow.md
 !/references/enhancements.md
 !/references/resume-workflow.md
 /data/
@@ -22,6 +26,7 @@
 *.rtf
 *.odt
 __pycache__/
+.career-write-*
 *.pyc
 .DS_Store
 .env
@@ -34,6 +39,7 @@ node_modules/
 /docs/.vitepress/cache/
 /docs/.vitepress/dist/
 /docs/public/demo/
+/examples/professions/*/source/output/
 /docs/site/public/demo/
 
 # Local Skill evaluation workspaces, outputs and comparison viewers.
@@ -41,6 +47,7 @@ node_modules/
 /career-skill-eval-*/
 
 # Local agent instructions and generated planning/evaluation documents.
+/AGENTS.override.md
 /CLAUDE.md
 /CLAUDE.local.md
 /GEMINI.md
@@ -77,3 +84,6 @@ coverage/
 /playwright-report/
 /test-results/
 Thumbs.db
+
+# Last successful local release; each package asks for its version.
+/VERSION

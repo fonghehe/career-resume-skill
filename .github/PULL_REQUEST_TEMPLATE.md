@@ -2,9 +2,9 @@
 
 ## 验证
 
-- [ ] `python3 scripts/check.py`（临时公开副本）
+- [ ] `python3 tools/check.py`（临时公开副本）
 - [ ] `pnpm docs:build`（涉及教程时）
-- [ ] `python3 scripts/check_public_index.py`（暂存完成后）
+- [ ] `python3 tools/check_public_index.py`（暂存完成后）
 - [ ] 涉及导出时检查 ZIP / 目录内容
 - [ ] 涉及规则时说明人工行为验证结果
 - [ ] 不兼容改动注明版本和迁移方式
