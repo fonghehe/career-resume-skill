@@ -35,6 +35,10 @@ def evidence(report):
         if claim.startswith(('简历位置', '正文位置')) or re.fullmatch(r'[-: ]+', claim):
             continue
         facts = set(ID_IN_CELL.findall(ids))
+        # Older reports abbreviate P01-A / B / C. Keep known IDs, but require
+        # review because the omitted prefixes cannot be matched exactly.
+        if re.search(r'/\s*[A-Z][A-Z0-9]*(?![A-Za-z0-9_-])', ids):
+            incomplete = True
         if facts and claim:
             rows.append((claim, facts))
         else:
@@ -107,7 +111,7 @@ def main(argv=None, *, root=ROOT):
     args = parser.parse_args(argv)
     try:
         if args.mode == 'compare':
-            lines = compare(args.before, args.after, args.language)
+            lines = compare(Path(root) / args.before, Path(root) / args.after, args.language)
         else:
             lines = impact(profile_root(root), set(args.fact))
     except (ValueError, OSError) as exc:

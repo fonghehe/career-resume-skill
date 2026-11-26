@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -65,6 +66,16 @@ class CareerCliTests(unittest.TestCase):
             with self.subTest(command=command):
                 self.assertIn('usage:', self.run_cli(command, '--help').stdout)
 
+    def test_runtime_entry_has_local_instructions_and_absolute_web_links(self):
+        entry = (self.installation / 'SKILL.md').read_text(encoding='utf-8')
+        routing = '\n'.join(line for line in entry.splitlines() if line.startswith('|'))
+        for target in re.findall(r'`((?:references|docs)/[^`]+\.md)`', routing):
+            self.assertTrue((self.installation / target).is_file(), target)
+        links = re.findall(r'\]\(([^)]+)\)', entry)
+        self.assertTrue(links)
+        for link in links:
+            self.assertTrue(link.startswith('https://fonghehe.github.io/career-resume-skill/'), link)
+
     def test_forwarded_version_command_uses_selected_workspace(self):
         workspace = self.base / 'separate-workspace'
         self.run_cli('init', '--new', workspace)
@@ -83,6 +94,24 @@ class CareerCliTests(unittest.TestCase):
         self.assertIn('full source project', result.stderr)
         self.assertFalse((self.installation / 'docs/public').exists())
         self.assertFalse((self.installation / 'local').exists())
+
+    def test_compare_resolves_relative_versions_in_selected_workspace(self):
+        workspace = self.base / 'selected'
+        self.run_cli('init', '--new', workspace)
+        for root, marker in ((workspace, 'SELECTED'), (self.base, 'CALLER')):
+            for name in ('before', 'after'):
+                version = root / 'local/output/resumes' / name
+                version.mkdir(parents=True)
+                (version / 'resume.zh-CN.md').write_text(f'# Fictional {marker} {name}\n')
+        result = self.run_cli('--workspace', workspace, 'versions', 'compare',
+                              'local/output/resumes/before', 'local/output/resumes/after')
+        self.assertIn('-# Fictional SELECTED before', result.stdout)
+        self.assertIn('+# Fictional SELECTED after', result.stdout)
+        self.assertNotIn('CALLER', result.stdout)
+        absolute = self.run_cli('--workspace', workspace, 'versions', 'compare',
+                                workspace / 'local/output/resumes/before',
+                                workspace / 'local/output/resumes/after')
+        self.assertEqual(absolute.stdout, result.stdout)
 
     def test_runtime_zip_asks_for_version_and_explicit_automation_needs_no_input(self):
         result = self.run_cli('package', input_text='3.1.4\n')

@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from career_resume.build_timeline import build, render_html, validate_data
 from career_resume.package import export
-from career_resume.presentation import profession_modules, technical_view
+from career_resume.presentation import THEMES, profession_modules, technical_view
 
 
 class Elements(HTMLParser):
@@ -35,6 +35,35 @@ class ProfessionPageTests(unittest.TestCase):
         export(ROOT, self.root, directory=True)
         self.data = json.loads((self.root / 'local/data/timeline.json').read_text())
         self.data['meta']['synthetic'] = True
+
+    def test_each_theme_has_initial_colors_and_offline_switching_resources(self):
+        for key, palette in THEMES.items():
+            with self.subTest(theme=key):
+                self.data['presentation'] = {'theme': key}
+                html = render_html(self.data, {})
+                self.assertIn('--blue: #' + palette['accent'], html)
+                self.assertIn('--theme-soft: #' + palette['background'], html)
+                self.assertIn('pageTheme', Elements(html).nodes)
+                for option in THEMES.values():
+                    self.assertIn(json.dumps(option, ensure_ascii=False, separators=(',', ':')), html)
+                self.assertNotIn('__PAGE_THEMES__', html)
+        self.data.pop('presentation')
+        html = render_html(self.data, {})
+        self.assertIn('--blue: #' + THEMES['sky']['accent'], html)
+        self.assertNotIn('presentation', self.data)
+
+    def test_personal_page_uses_configured_theme_without_demo_picker(self):
+        self.data['meta']['synthetic'] = False
+        self.data['presentation'] = {'theme': 'peach'}
+        html = render_html(self.data, {})
+        self.assertNotIn('pageTheme', Elements(html).nodes)
+        self.assertIn('--blue: #' + THEMES['peach']['accent'], html)
+        self.assertIn('--theme-soft: #' + THEMES['peach']['background'], html)
+        self.data.pop('presentation')
+        self.data['meta'].pop('synthetic')
+        html = render_html(self.data, {})
+        self.assertNotIn('pageTheme', Elements(html).nodes)
+        self.assertIn('--blue: #' + THEMES['sky']['accent'], html)
 
     def test_professions_render_their_own_populated_modules_without_code(self):
         for profession, title in (('教师', '课程与教研'), ('销售', '客户服务案例'), ('设计师', '设计作品')):

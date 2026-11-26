@@ -160,3 +160,18 @@ class ResumeToolsTests(unittest.TestCase):
         self.assertEqual(len(matches), 2)
         self.assertIn('before: P01-A', matches[0])
         self.assertIn('unmapped: manual review', matches[1])
+
+    def test_abbreviated_legacy_ids_require_review_for_unmatched_facts(self):
+        self.version('legacy', '# 虚构历史版本\n', 'P01-A / B / C；P02-A / B / C')
+        matches = impact(self.profile, {'P01-C'})
+        self.assertEqual(len(matches), 1)
+        self.assertIn('legacy: manual review', matches[0])
+
+    def test_profession_report_maps_each_project_fact_in_full(self):
+        version = self.version('teacher', '# 虚构教师简历\n')
+        (version / 'match-report.md').write_text(
+            (ROOT / 'examples/professions/teacher/match-report.md').read_text(encoding='utf-8'),
+            encoding='utf-8')
+        matches = impact(self.profile, {'P01-B', 'P01-C'})
+        self.assertTrue(any('三个案例的背景、动作、结果' in line for line in matches))
+        self.assertFalse(any('manual review' in line for line in matches))

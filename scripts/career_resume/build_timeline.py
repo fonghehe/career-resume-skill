@@ -7,7 +7,7 @@ import copy
 
 from career_resume.career_data import checked_local, parse_iso_datetime, project_ids
 from career_resume.file_io import atomic_write
-from career_resume.presentation import profession_modules, theme_colors, validate_presentation, technical_view
+from career_resume.presentation import THEMES, profession_modules, theme_colors, validate_presentation, technical_view
 from html import escape
 import json
 from urllib.parse import urlsplit
@@ -28,54 +28,61 @@ HTML = r'''<!doctype html>
   <title>__PAGE_TITLE__</title>
   <style>
     :root {
-      --ink: #14213d;
-      --muted: #64748b;
-      --soft: #eef3f8;
-      --line: #d9e2ec;
+      --ink: #192b3b;
+      --muted: #526374;
+      --soft: #f1f4f5;
+      --line: #dce3e7;
       --panel: #ffffff;
-      --bg: #f2f5f9;
+      --bg: #f6f7f8;
       --blue: #__THEME_ACCENT__;
-      --navy: #183b65;
-      --teal: #__THEME_ACCENT__;
+      --theme-soft: #__THEME_BACKGROUND__;
+      --navy: #142d42;
+      --teal: var(--blue);
       --orange: #c15b20;
       --purple: #7c3aed;
       --green: #15803d;
       --red: #b42318;
-      --shadow: 0 2px 8px rgba(29, 48, 75, .025);
-      --radius: 16px;
-      --section-gap: 24px;
-      --card-gap: 12px;
-      --page-gutter: clamp(12px, 1.5vw, 24px);
+      --shadow: 0 4px 24px rgba(20, 45, 66, .035);
+      --hero-muted: #ffffff;
+      --hero-line: rgba(255, 255, 255, .35);
+      --radius: 12px;
+      --section-gap: 28px;
+      --card-gap: 20px;
+      --page-gutter: clamp(16px, 4vw, 56px);
     }
     * { box-sizing: border-box; }
     [hidden] { display: none !important; }
-    .professional-item { padding: 12px 0; border-bottom: 1px solid var(--line); }
-    .professional-item:last-child { border-bottom: 0; }
-    .professional-item h3 { margin: 0 0 6px; }
-    .professional-item p { margin: 6px 0; white-space: pre-wrap; }
+    .professional-item { min-width: 0; padding: 24px; border: 1px solid var(--line); border-radius: 8px; overflow-wrap: anywhere; }
+    .professional-item:last-child { border-bottom: 1px solid var(--line); }
+    .professional-item h3 { margin: 0 0 10px; font-size: 19px; font-weight: 600; }
+    .professional-item p { margin: 8px 0; white-space: pre-wrap; color: var(--muted); }
+    .professional-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+    .professional-item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+    .professional-item .professional-period { color: var(--blue); font-size: 13px; font-variant-numeric: tabular-nums; }
+    .professional-item .professional-subtitle { font-weight: 600; color: var(--ink); }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
       color: var(--ink);
-      background: var(--bg);
-      font: 14px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(180deg, var(--theme-soft), var(--bg) 700px);
+      font: 16px/1.7 "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
     }
     button, input, select { font: inherit; }
     a { color: inherit; }
-    .page { display: grid; gap: var(--section-gap); width: min(1680px, calc(100% - 2 * var(--page-gutter))); margin: 0 auto; padding: 28px 0 36px; }
+    .page { display: grid; gap: var(--section-gap); width: min(1184px, calc(100% - 2 * var(--page-gutter))); margin: 0 auto; padding: 48px 0 40px; }
     .page > * { min-width: 0; }
-    .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 320px); gap: 16px; align-items: end; }
-    .eyebrow { margin: 0 0 8px; color: var(--blue); font-weight: 700; font-size: 13px; }
-    h1 { margin: 0; max-width: 980px; font-size: clamp(28px, 3vw, 40px); line-height: 1.22; letter-spacing: -.02em; }
-    .lead { margin: 8px 0 0; color: var(--muted); font-size: 15px; }
-    .updated { text-align: right; color: var(--muted); overflow-wrap: anywhere; }
-    .updated strong { display: block; color: var(--ink); font-size: 14px; text-wrap: balance; }
-    .stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--card-gap); }
-    .stat, .panel { background: rgba(255,255,255,.94); border: 1px solid rgba(216,226,236,.9); box-shadow: var(--shadow); }
-    .stat { padding: 14px 16px; border-radius: 14px; }
-    .stat strong { display: block; font-size: 28px; line-height: 1.15; letter-spacing: -.035em; }
-    .stat span { display: block; margin-top: 4px; color: var(--muted); }
-    .panel { border-radius: var(--radius); padding: clamp(18px, 2vw, 28px); scroll-margin-top: 16px; }
+    .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(200px, .36fr); gap: 32px; align-items: center; padding: clamp(24px, 3.5vw, 48px); background: var(--blue); border-radius: var(--radius); color: white; }
+    .eyebrow { margin: 0 0 16px; color: var(--blue); font-weight: 600; font-size: 13px; letter-spacing: .08em; }
+    h1 { margin: 0; max-width: 800px; font-size: clamp(28px, 3vw, 42px); font-weight: 600; line-height: 1.3; letter-spacing: -.035em; overflow-wrap: anywhere; text-wrap: balance; }
+    .lead { margin: 16px 0 0; max-width: 60ch; color: var(--hero-muted); font-size: 16px; line-height: 1.8; }
+    .updated { border-left: 1px solid var(--hero-line); padding-left: 24px; color: var(--hero-muted); overflow-wrap: anywhere; font-size: 12px; }
+    .updated strong { display: block; margin-bottom: 14px; color: white; font-size: 15px; font-weight: 500; text-wrap: balance; }
+    .stats { display: flex; flex-wrap: wrap; border-block: 1px solid var(--line); padding: 20px 0; gap: 16px 0; }
+    .stat, .panel { background: var(--panel); border: 1px solid var(--line); box-shadow: var(--shadow); }
+    .stat { flex: 1 1 140px; padding: 0 28px; border: 0; border-left: 1px solid var(--line); border-radius: 0; background: transparent; box-shadow: none; }
+    .stat strong { display: block; font-size: 32px; font-weight: 600; line-height: 1.3; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+    .stat span { display: block; margin-top: 6px; color: var(--muted); font-size: 13px; }
+    .panel { border-radius: var(--radius); padding: clamp(20px, 3vw, 36px); scroll-margin-top: 24px; }
     .section-head { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 14px; }
     .section-head h2 { margin: 0; font-size: 22px; letter-spacing: -.02em; }
     .section-head p { margin: 4px 0 0; color: var(--muted); max-width: 800px; }
@@ -104,34 +111,34 @@ HTML = r'''<!doctype html>
     .bar::after { content: attr(data-label); position: absolute; left: 8px; top: 2px; color: #fff; font-size: 11px; font-weight: 700; line-height: 20px; white-space: nowrap; text-shadow: 0 1px 2px rgba(0,0,0,.2); }
     .bar.short::after { left: calc(100% + 7px); color: var(--ink); text-shadow: none; }
     .bar:not(.short)::after { max-width: calc(100% - 16px); overflow: hidden; text-overflow: ellipsis; }
-    .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); align-items: start; gap: var(--card-gap); margin-top: 16px; }
-    .project-card { display: flex; flex-direction: column; gap: 8px; min-width: 0; position: relative; padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: #fff; cursor: pointer; overflow-wrap: anywhere; transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease; }
-    .project-card:hover, .project-card:focus-within { transform: translateY(-2px); border-color: #9bb7df; box-shadow: 0 12px 28px rgba(37,99,235,.1); outline: none; }
-    .project-card h3 { margin: 0; font-size: 18px; line-height: 1.45; }
-    .project-card p { margin: 0; color: #526277; }
+    .project-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; gap: var(--card-gap); margin-top: 24px; }
+    .project-card { display: flex; flex-direction: column; gap: 16px; min-width: 0; position: relative; padding: 28px; border: 1px solid var(--line); border-top: 3px solid var(--blue); border-radius: 8px; background: var(--panel); cursor: pointer; overflow-wrap: anywhere; transition: border-color .2s ease, box-shadow .2s ease; }
+    .project-card:hover, .project-card:focus-within { border-color: var(--blue); box-shadow: 0 8px 24px rgba(20,45,66,.08); }
+    .project-card h3 { margin: 0; font-size: 22px; font-weight: 600; line-height: 1.5; letter-spacing: -.02em; }
+    .project-card p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.85; }
     .project-link { display: inline-flex; margin-top: 10px; color: var(--blue); font-weight: 700; text-decoration: none; }
     .project-link:hover { text-decoration: underline; }
-    .detail-link { display: inline-flex; margin-top: 12px; padding: 0; border: 0; background: transparent; color: var(--blue); font-weight: 800; cursor: pointer; }
+    .detail-link { display: inline-flex; align-items: center; min-height: 44px; margin-top: 12px; padding: 0; border: 0; background: transparent; color: var(--blue); font-weight: 600; cursor: pointer; }
     .project-card .meta { margin: 0 !important; }
     .project-card .chips { margin: 0; }
     .project-card .detail-link { align-self: flex-start; margin-top: auto; padding-top: 4px; text-align: left; }
-    .card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 11px; }
+    .card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 12px; }
     .tag { display: inline-flex; padding: 3px 8px; border-radius: 999px; background: var(--soft); color: var(--navy); font-weight: 700; }
     .tag.confirmed { color: var(--green); background: #edf9f0; }
     .tag.resume-supported { color: var(--purple); background: #f4f0ff; }
     .tag.synthetic-draft { color: var(--red); background: #fff0ee; }
     .meta { margin-top: 10px !important; color: var(--muted) !important; font-size: 12px; }
     .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-    .chip { padding: 3px 7px; border: 1px solid #dde6ee; border-radius: 6px; color: #45566c; background: #fafcff; font-size: 11px; }
-    .career-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 16px; align-items: start; }
-    .career-item { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #fff; overflow-wrap: anywhere; }
-    .career-date { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; color: var(--blue); font-weight: 700; font-size: 12px; font-variant-numeric: tabular-nums; }
+    .chip { padding: 4px 9px; border: 1px solid var(--line); border-radius: 4px; color: var(--muted); background: var(--soft); font-size: 12px; }
+    .career-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; align-items: start; }
+    .career-item { display: grid; grid-template-columns: minmax(150px, .28fr) minmax(0, 1fr); gap: 32px; padding: 28px 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: var(--panel); overflow-wrap: anywhere; }
+    .career-date { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; color: var(--muted); font-weight: 500; font-size: 13px; font-variant-numeric: tabular-nums; }
     .career-role { color: var(--ink) !important; font-weight: 700; }
     .career-summary { line-height: 1.75; }
     .career-date .tenure { flex-basis: 100%; font-weight: 400; color: var(--muted); }
-    .career-item h3 { margin: 0; font-size: 15px; }
-    .career-item p { margin: 2px 0 0; color: var(--muted); }
-    .career-company { display: block; container-type: inline-size; padding: 16px; }
+    .career-item h3 { margin: 0 0 6px; font-size: 20px; font-weight: 600; }
+    .career-item p { margin: 8px 0 0; color: var(--muted); }
+    .career-company { display: block; container-type: inline-size; padding: 28px 0; }
     .career-company-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
     .career-company-head h3 { font-size: 18px; }
     .career-company-head .career-date { justify-content: flex-end; text-align: right; }
@@ -182,8 +189,8 @@ HTML = r'''<!doctype html>
     .detail-modal[hidden] { display: none; }
     .detail-modal { position: fixed; inset: 0; z-index: 100; display: grid; grid-template-columns: minmax(0,1fr); align-items: stretch; }
     .modal-backdrop { position: absolute; inset: 0; border: 0; background: rgba(15,23,42,.54); backdrop-filter: blur(3px); cursor: pointer; }
-    .detail-drawer { position: relative; justify-self: end; width: min(1180px, 96vw); height: 100%; overflow: auto; padding: 24px; background: #f8fafc; box-shadow: -18px 0 60px rgba(15,23,42,.2); }
-    .modal-close { position: sticky; top: 0; z-index: 2; float: right; width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 50%; background: #fff; color: var(--ink); font-size: 24px; line-height: 1; cursor: pointer; box-shadow: var(--shadow); }
+    .detail-drawer { position: relative; justify-self: end; width: min(1180px, 96vw); height: 100%; overflow: auto; padding: 32px; background: var(--bg); box-shadow: -18px 0 60px rgba(15,23,42,.2); }
+    .modal-close { position: sticky; top: 0; z-index: 2; float: right; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 50%; background: var(--panel); color: var(--ink); font-size: 24px; line-height: 1; cursor: pointer; box-shadow: var(--shadow); }
     .detail-head { padding-right: 54px; }
     .detail-head h2 { margin: 8px 0 12px; font-size: 30px; line-height: 1.3; }
     .detail-head p { margin: 0; color: var(--muted); }
@@ -192,7 +199,7 @@ HTML = r'''<!doctype html>
     .capability-box h3 { margin: 0 0 10px; font-size: 14px; }
     .capability-box .empty-capability { color: var(--muted); font-size: 12px; }
     .markdown-panel { clear: both; margin-top: 18px; }
-    .project-record { margin: 16px 0; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: #fffdf8; font-size: 15px; line-height: 1.7; overflow-wrap: anywhere; }
+    .project-record { margin: 16px 0; padding: 24px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); font-size: 16px; line-height: 1.85; overflow-wrap: anywhere; }
     .project-record h3 { margin: 20px 0 8px; font-size: 19px; line-height: 1.4; }
     .project-record h4 { margin: 16px 0 8px; line-height: 1.4; }
     .project-record p { margin: 8px 0; white-space: pre-line; }
@@ -218,7 +225,7 @@ HTML = r'''<!doctype html>
     .git-event summary { cursor: pointer; }
     .git-event code { overflow-wrap: anywhere; }
     .event-project { padding: 0; border: 0; background: transparent; color: var(--blue); cursor: pointer; }
-    .demo-notice { padding: 10px 14px; border: 1px solid #e6cda4; border-radius: 12px; background: #fff5df; color: #785c2c; }
+    .demo-notice { padding: 12px 16px; border: 1px solid #d5dfe7; border-left: 3px solid #697f91; border-radius: 6px; background: #edf2f6; color: #465e70; font-size: 13px; }
     #gitHistory { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
     #gitRecords > summary { cursor: pointer; font-weight: 700; }
     #gitHistory .filters { margin-top: 12px; margin-bottom: 12px; }
@@ -240,7 +247,7 @@ HTML = r'''<!doctype html>
     #gitMore, #detailGitMore { margin-top: 20px; }
     #detailGit > h3 { margin: 0; }
     [hidden] { display: none !important; }
-    .global-filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .filter-toolbar { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; padding: 20px; margin-top: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
     .global-filters label { display: flex; gap: 6px; align-items: center; }
     .filter-note { color: var(--muted); font-size: 12px; }
     .source-details { margin-top: 8px; font-size: 12px; color: var(--muted); }
@@ -262,16 +269,16 @@ HTML = r'''<!doctype html>
     footer { padding: 4px; color: var(--muted); font-size: 12px; text-align: center; }
     .module > .module-summary { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 18px; cursor: pointer; list-style: none; }
     .module-summary::-webkit-details-marker { display: none; }
-    .module-summary h2 { margin: 0; font-size: 21px; line-height: 1.5; }
+    .module-summary h2 { margin: 0; border-left: 3px solid var(--blue); padding-left: 14px; font-size: 24px; font-weight: 600; line-height: 1.5; letter-spacing: -.025em; }
     .module-overview { color: var(--muted); font-size: 13px; }
     .module-summary::after { content: '展开 ＋'; margin-left: auto; color: var(--blue); font-size: 13px; font-weight: 600; white-space: nowrap; }
     .module[open] > .module-summary::after { content: '收起 −'; }
-    .module-content { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); min-width: 0; }
-    .module-toggle { margin-left: auto; padding: 6px 12px; border: 1px solid var(--line); border-radius: 7px; background: #fff; color: var(--navy); cursor: pointer; }
-    .section-nav { display: flex; flex-wrap: wrap; gap: 6px; }
-    .section-nav a { padding: 6px 12px; border-radius: 7px; text-decoration: none; color: var(--navy); font-weight: 600; }
-    .section-nav a:hover { background: #e3eaf4; }
-    .global-filters { padding: 16px 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; gap: 12px; }
+    .module-content { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--line); min-width: 0; }
+    .module-toggle { margin-left: auto; min-height: 44px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--navy); font-size: 13px; cursor: pointer; }
+    .section-nav { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 0; min-width: 0; }
+    .section-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 16px; border-radius: 6px; text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500; transition: color .2s ease, background .2s ease; }
+    .section-nav a:hover { color: var(--navy); background: var(--theme-soft); }
+    .global-filters { display: block; padding: 0; border: 0; }
     .filter-main { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; flex: 1; }
     .share-options { flex-basis: 100%; border-top: 1px solid var(--line); padding-top: 10px; }
     .share-options > summary { cursor: pointer; color: var(--navy); font-weight: 600; }
@@ -291,13 +298,34 @@ HTML = r'''<!doctype html>
     .detail-body .project-record { margin-top: 0; background: white; }
     .detail-body #detailOverview { margin-top: 0; }
     .detail-body .capability-grid { grid-template-columns: minmax(0, 1fr); }
-    .detail-sidebar { padding: 18px; background: #edf2f8; border-radius: 12px; }
+    .detail-sidebar { padding: 24px; background: var(--soft); border-radius: 8px; }
     .empty { grid-column: 1 / -1; }
     .timeline-shell, .repo-table-wrap { border: 1px solid #e5ebf2; border-radius: 10px; padding: 8px 12px; }
     .timeline { padding-right: 50px; }
     .control { cursor: pointer; }
     input.control { cursor: text; }
     :focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
+    .page-tools { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px 24px; align-items: start; border-bottom: 1px solid var(--line); padding-bottom: 16px; }
+    .global-filters[open] { grid-column: 1 / -1; }
+    .theme-picker { display: grid; gap: 8px; margin-top: 24px; color: white; font-size: 13px; }
+    .theme-picker select { width: 100%; min-height: 44px; border: 1px solid white; border-radius: 6px; padding: 8px 12px; background: white; color: var(--ink); cursor: pointer; }
+    .theme-picker select:focus-visible { outline-color: white; }
+    .hero .eyebrow { color: var(--hero-muted); }
+    .stat:first-child { border-left: 0; padding-left: 0; }
+    .career-item:last-child { border-bottom: 0; padding-bottom: 0; }
+    .career-item:first-child { padding-top: 0; }
+    .global-filters > summary, .timeline-details > summary { display: flex; align-items: center; gap: 12px; min-height: 44px; width: fit-content; padding: 4px 0; color: var(--muted); font-size: 14px; cursor: pointer; list-style: none; }
+    .global-filters > summary::before, .timeline-details > summary::before { content: '+'; color: var(--blue); font-size: 20px; }
+    .global-filters[open] > summary::before, .timeline-details[open] > summary::before { content: '−'; }
+    .global-filters > summary::-webkit-details-marker, .timeline-details > summary::-webkit-details-marker { display: none; }
+    .timeline-details { margin: 12px 0 24px; }
+    .timeline-shell:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+    .share-options > summary, .source-details > summary, .project-extra > summary { min-height: 44px; align-content: center; }
+    .share-controls label { min-height: 44px; }
+    .share-controls input { width: 20px; height: 20px; accent-color: var(--blue); }
+    .skip-link { position: fixed; top: 12px; left: 12px; z-index: 110; padding: 12px 20px; background: var(--navy); color: white; border-radius: 6px; transform: translateY(-200%); }
+    .skip-link:focus { transform: none; }
+    button:active, .section-nav a:active { opacity: .75; }
     @container (max-width: 600px) {
       .career-company-head { flex-direction: column; gap: 8px; }
       .career-company-head .career-date { justify-content: flex-start; text-align: left; }
@@ -309,7 +337,7 @@ HTML = r'''<!doctype html>
     }
     @media (max-width: 900px) {
       .hero { grid-template-columns: 1fr; gap: 10px; }
-      .updated { text-align: left; }
+      .updated { text-align: left; border-left: 0; border-top: 1px solid var(--hero-line); padding: 20px 0 0; }
       .detail-body { grid-template-columns: minmax(0, 1fr); }
       .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .career-company-head { flex-direction: column; gap: 8px; }
@@ -317,11 +345,18 @@ HTML = r'''<!doctype html>
     }
     @media (max-width: 700px) {
       :root { --section-gap: 18px; --card-gap: 10px; }
-      .page { padding: 20px 0 28px; }
+      .page { padding: 16px 0 28px; }
+      .hero { gap: 20px; }
+      .page-tools { grid-template-columns: minmax(0, 1fr); }
+      .professional-item { padding: 20px; }
+      .updated { border-left: 0; border-top: 1px solid var(--hero-line); padding: 20px 0 0; }
+      .career-item { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+      .module-overview { flex-basis: 100%; order: 1; }
+      .module-summary h2 { font-size: 21px; }
       .lead { font-size: 14px; }
-      .stats, .stats:has(.stat-total) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stats, .stats:has(.stat-total) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .stats:has(.stat-total) .stat-total { display: block; }
-      .stat { padding: 12px; }
+      .stat { padding: 8px 16px; }
       .stat strong { font-size: 23px; }
       .stat-total strong { font-size: 20px; }
       .panel { padding: 16px; }
@@ -331,15 +366,19 @@ HTML = r'''<!doctype html>
       .timeline { min-width: 760px; }
       .axis, .timeline-row { grid-template-columns: 164px minmax(520px, 1fr); gap: 12px; }
       .row-label { overflow-wrap: anywhere; }
-      .project-card, .career-company { padding: 14px; }
-      .project-grid, .career-list, .method, .leadership-phases, .impact-grid, .gap-list { grid-template-columns: minmax(0, 1fr); }
+      .project-card { padding: 22px; }
+      .career-company { padding: 24px 0; }
+      .professional-grid, .project-grid, .career-list, .method, .leadership-phases, .impact-grid, .gap-list { grid-template-columns: minmax(0, 1fr); }
       .gap-summary { grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); }
       .career-phase { grid-template-columns: minmax(0, 1fr); gap: 4px; }
       .detail-drawer { width: 100%; padding: 16px; }
       .detail-head h2 { font-size: 26px; }
       .project-record { padding: 16px; }
       .capability-grid, .activity-grid { grid-template-columns: minmax(0, 1fr); }
-      .global-filters { padding: 14px; }
+      .global-filters { padding: 0; }
+      .filter-toolbar { padding: 16px; }
+      .filter-main label { flex: 1 1 100%; justify-content: space-between; }
+      .filter-main select { flex: 1; }
       .filter-main { flex-basis: 100%; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -350,6 +389,9 @@ HTML = r'''<!doctype html>
       body { background: #fff; }
       .page { display: block; width: 100%; padding: 0; }
       .page > * { margin-bottom: 20px; }
+      .hero { color: var(--ink); background: white; padding: 0 0 24px; border-bottom: 2px solid var(--ink); }
+      .hero .eyebrow, .hero .lead, .updated, .updated strong { color: var(--ink); }
+      .page-tools, .theme-picker, .skip-link { display: none; }
       .filters { display: none; }
       .panel, .stat { box-shadow: none; break-inside: avoid; }
       .timeline-shell, .repo-table-wrap { overflow: visible; }
@@ -359,14 +401,15 @@ HTML = r'''<!doctype html>
   </style>
 </head>
 <body>
-  <main class="page">
+  <a class="skip-link" href="#mainContent">跳至履历内容</a>
+  <main class="page" id="mainContent">
     <header class="hero">
       <div>
         <p class="eyebrow" id="professionHeading">职业履历与实践记录</p>
         <h1 id="title"></h1>
         <p class="lead" id="subtitle"></p>
       </div>
-      <div class="updated"><strong id="headline"></strong>资料更新：<span id="updatedAt"></span></div>
+      <div class="updated"><strong id="headline"></strong>资料更新：<span id="updatedAt"></span>__THEME_PICKER__</div>
     </header>
 
     <aside class="demo-notice" id="demoNotice" hidden>这是一份虚构演示：职业经历、作品和材料均为教学示例，不属于任何人的真实经历。</aside>
@@ -377,12 +420,15 @@ HTML = r'''<!doctype html>
       __LOCAL_DEMO_LINK__
     </aside>
 
+    <section class="stats" id="stats" aria-label="概览统计"></section>
+
+    <div class="page-tools">
     <nav class="section-nav" aria-label="页面章节">
       <a href="#career"__CAREER_VISIBILITY__>__CAREER_TITLE__</a><a href="#projects"__PROJECTS_VISIBILITY__>__PROJECTS_TITLE__</a><a href="#repositories"__CODE_VISIBILITY__>代码活动</a>
       __PROFESSION_NAV__
       <button class="module-toggle" id="toggleModules" type="button">展开全部模块</button>
     </nav>
-    <nav class="global-filters" aria-label="整页筛选">
+    <details class="global-filters" aria-label="整页筛选"><summary>筛选与分享</summary><div class="filter-toolbar">
       <div class="filter-main">
       <label>组织 <select class="control" id="companyFilter" aria-label="按组织筛选整页"><option value="">所有组织与独立项目</option></select></label>
       <label>时间 <select class="control" id="yearFilter" aria-label="按年份筛选整页"><option value="">全部年份</option></select></label>
@@ -395,18 +441,17 @@ HTML = r'''<!doctype html>
       <label class="filter-note"><input type="checkbox" id="shareAttachments">包含已检查的项目附件</label>
       <span class="filter-note">分享页保留项目名称、职责、阶段和任职摘要；下载后检查文字与可选附件再分享。</span>
       </div></details>
-    </nav>
+    </div></details>
+    </div>
 
     <section id="shareResult" hidden aria-live="polite">
       <a id="shareDownload" download="career-share.html">分享页已生成 · 下载 HTML</a>
       <details><summary>预览分享内容</summary><iframe class="share-preview" id="sharePreview" title="分享内容预览" sandbox="allow-scripts"></iframe></details>
     </section>
 
-    <section class="stats" id="stats" aria-label="概览统计"></section>
-
     __PROFESSION_MODULES__
 
-    <details class="panel module" id="career"__CAREER_VISIBILITY____DEMO_OPEN__>
+    <details class="panel module" id="career"__CAREER_VISIBILITY__ open>
       <summary class="module-summary"><h2>__CAREER_TITLE__</h2><span class="module-overview" id="careerModuleCount"></span></summary>
       <div class="module-content">
       <div class="section-head">
@@ -416,7 +461,7 @@ HTML = r'''<!doctype html>
       </div>
     </details>
 
-    <details class="panel module" id="projects"__PROJECTS_VISIBILITY____DEMO_OPEN__>
+    <details class="panel module" id="projects"__PROJECTS_VISIBILITY__ open>
       <summary class="module-summary"><h2>__PROJECTS_TITLE__</h2><span class="module-overview" id="projectsModuleCount"></span></summary>
       <div class="module-content">
       <div class="section-head">
@@ -431,7 +476,7 @@ HTML = r'''<!doctype html>
         <input class="control search" id="search" type="search" placeholder="搜索项目、案例、组织或方法" aria-label="搜索项目">
         <select class="control" id="category" aria-label="按类别筛选"><option value="">全部类别</option></select>
       </div>
-      <div class="timeline-shell"><div class="timeline" id="projectTimeline"></div></div>
+      <details class="timeline-details"><summary>查看案例时间线</summary><div class="timeline-shell" tabindex="0" role="region" aria-label="案例时间线，可横向滚动"><div class="timeline" id="projectTimeline"></div></div></details>
       <div class="project-grid" id="projectGrid"></div>
       </div>
     </details>
@@ -514,6 +559,7 @@ HTML = r'''<!doctype html>
   <script id="fact-source-details" type="application/json">__SOURCE_DETAILS__</script>
   <script id="project-details" type="application/json">__PROJECT_DETAILS__</script>
   <script>
+    const PAGE_THEMES = __PAGE_THEMES__;
     const DATA = JSON.parse(document.getElementById('timeline-data').textContent);
     const SOURCE_DETAILS = JSON.parse(document.getElementById('fact-source-details').textContent);
     const PROJECT_DETAILS = JSON.parse(document.getElementById('project-details').textContent);
@@ -668,6 +714,7 @@ HTML = r'''<!doctype html>
       const starts=career.map(c=>c.start).filter(Boolean).sort(), ends=career.map(c=>c.end).filter(Boolean).sort();
       const safe = {meta:{title:'项目履历 · 分享版',subtitle:'所选项目与任职阶段摘要；不含来源原文、邮箱、仓库路径和提交明细。',updatedAt:DATA.meta.updatedAt,synthetic:!!DATA.meta.synthetic},
         profile:{headline:'所选项目概览',careerStart:starts[0] || '',careerEnd:ends.at(-1) || ''},
+        presentation:{theme:$('pageTheme')?.value || DATA.presentation?.theme || 'sky'},
         leadership:{phases:[],metrics:[],responsibilities:[],copilot:[],boundary:''},career,projects:safeProjects,repositories:repos,gitEvents:[]};
       const details = Object.fromEntries(safeProjects.map(p => [p.id,{path:'',
         markdown:`# ${p.id}｜${p.name}\n\n## 项目概述\n${p.summary || ''}\n\n## 关键工作\n${p.highlights.map(h=>'- '+h).join('\n')}`,
@@ -683,7 +730,10 @@ HTML = r'''<!doctype html>
       clone.querySelector('#projectDetail').hidden=true;
       clone.querySelector('#projectDetail').setAttribute('aria-hidden','true');
       clone.querySelectorAll('details').forEach(d=>d.removeAttribute('open'));
-      clone.querySelectorAll('select').forEach(el=>{while(el.options.length>1) el.remove(1); el.selectedIndex=0;});
+      clone.querySelectorAll('select').forEach(element => {
+        element.options.length = element.id === 'pageTheme' ? 0 : 1;
+        element.selectedIndex = 0;
+      });
       clone.querySelectorAll('input').forEach(el=>{el.value=''; el.removeAttribute('value'); el.checked=false; el.removeAttribute('checked');});
       clone.querySelector('#scopeNote').textContent='公司、项目和代码记录同步筛选';
       clone.querySelector('#gitRecordsSummary').textContent='查看本人提交记录';
@@ -793,6 +843,7 @@ HTML = r'''<!doctype html>
       return output.join('');
     }
 
+    let detailReturnFocus = null;
     function openProjectDetail(projectId) {
       const project = DATA.projects.find(item => item.id === projectId);
       const detail = PROJECT_DETAILS[projectId];
@@ -829,6 +880,7 @@ HTML = r'''<!doctype html>
         $('gitHistory').scrollIntoView({behavior: 'smooth'});
       };
       const modal = $('projectDetail');
+      detailReturnFocus = document.activeElement;
       modal.hidden = false;
       modal.setAttribute('aria-hidden', 'false');
       document.body.classList.add('modal-open');
@@ -840,6 +892,7 @@ HTML = r'''<!doctype html>
       modal.hidden = true;
       modal.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('modal-open');
+      if (detailReturnFocus?.isConnected) detailReturnFocus.focus({preventScroll: true});
     }
 
     function updateModuleSummaries() {
@@ -983,7 +1036,7 @@ HTML = r'''<!doctype html>
       }
       grid.innerHTML = items.map(p => `
         <article class="project-card" data-project-id="${escapeHtml(p.id)}">
-          <div class="card-top"><span>${escapeHtml(p.id)} · ${escapeHtml(p.category)}</span><span class="tag ${escapeHtml(p.status)}">${p.nature === 'personal' ? '独立项目' : (statusText[p.status] || escapeHtml(p.status))}</span></div>
+          <div class="card-top"><span>${escapeHtml(p.category)}</span><span class="tag ${escapeHtml(p.status)}">${p.nature === 'personal' ? '独立项目' : (statusText[p.status] || escapeHtml(p.status))}</span></div>
           <h3>${escapeHtml(p.name)}</h3>
           <p>${escapeHtml(p.summary)}</p>
           ${projectMetrics(p.id)}
@@ -1050,7 +1103,21 @@ HTML = r'''<!doctype html>
       $('gitMore').hidden = events.length <= gitLimit;
     }
 
+    function applyPageTheme(theme) {
+      const palette = PAGE_THEMES[theme];
+      if (!palette) return;
+      document.documentElement.style.setProperty('--blue', '#' + palette.accent);
+      document.documentElement.style.setProperty('--theme-soft', '#' + palette.background);
+      $('pageTheme').value = theme;
+    }
+
     function init() {
+      const themePicker = $('pageTheme');
+      if (themePicker) {
+        Object.entries(PAGE_THEMES).forEach(([key, palette]) => themePicker.appendChild(new Option(palette.name, key)));
+        applyPageTheme(DATA.presentation?.theme || 'sky');
+        themePicker.addEventListener('change', event => applyPageTheme(event.target.value));
+      }
       const companies = new Set([...DATA.career.map(companyOf), ...DATA.projects.map(companyOf)]);
       [...companies].sort().forEach(c => $('companyFilter').appendChild(new Option(c,c)));
       const years = new Set();
@@ -1090,7 +1157,21 @@ HTML = r'''<!doctype html>
         openProjectDetail(trigger.dataset.projectId);
       });
       document.querySelectorAll('[data-close-detail]').forEach(button => button.addEventListener('click', closeProjectDetail));
-      document.addEventListener('keydown', event => { if (event.key === 'Escape' && !$('projectDetail').hidden) closeProjectDetail(); });
+      document.addEventListener('keydown', event => {
+        if ($('projectDetail').hidden) return;
+        if (event.key === 'Escape') closeProjectDetail();
+        if (event.key !== 'Tab') return;
+        const controls = [...document.querySelectorAll('.detail-drawer button, .detail-drawer a[href], .detail-drawer summary, .detail-drawer [tabindex="0"]')]
+          .filter(element => !element.disabled && element.getClientRects().length);
+        const first = controls[0], last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
       const view = DATA.presentation || {};
       const order = [...new Set([...(view.order || []), 'career', ...(view.sections || []).map(s => s.id), 'projects', 'repositories'])];
       const anchor = document.querySelector('.scope-details');
@@ -1471,6 +1552,11 @@ def render_html(data, details, sources=None, *, local_demo=False, show_empty=Fal
     return (HTML.replace('__PAGE_TITLE__', escape(data['meta']['title']))
             .replace('__TECHNICAL_VIEW__', 'true' if technical_view(data) else 'false')
             .replace('__THEME_ACCENT__', palette['accent'])
+            .replace('__THEME_BACKGROUND__', palette['background'])
+            .replace('__PAGE_THEMES__', encode_json_for_html(THEMES if data['meta'].get('synthetic') else {}))
+            .replace('__THEME_PICKER__',
+                     '<label class="theme-picker">网页主题<select id="pageTheme" aria-label="网页主题色"></select></label>'
+                     if data['meta'].get('synthetic') else '')
             .replace('__PROFESSION_MODULES__', modules).replace('__PROFESSION_NAV__', links)
             .replace('__CAREER_TITLE__', escape(view.get('careerTitle', '职业经历')))
             .replace('__PROJECTS_TITLE__', escape(view.get('projectsTitle', '项目与案例')))
@@ -1478,7 +1564,6 @@ def render_html(data, details, sources=None, *, local_demo=False, show_empty=Fal
             .replace('__CAREER_VISIBILITY__', '' if data['career'] else ' hidden')
             .replace('__PROJECTS_VISIBILITY__', '' if data['projects'] else ' hidden')
             .replace('__CODE_VISIBILITY__', '' if has_code else ' hidden')
-            .replace('__DEMO_OPEN__', ' open' if data['meta'].get('synthetic') else '')
             .replace('__EMPTY_NOTICE__', '' if show_empty else ' hidden')
             .replace('__LOCAL_DEMO_LINK__',
                      '<a id="localDemoLink" href="../output/demo/showcase/project-timeline.html">打开虚构示例</a>'

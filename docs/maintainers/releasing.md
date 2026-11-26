@@ -68,6 +68,8 @@ python3 -B tools/release.py --version 1.1.0
 
 显式传入 `--version` 代表本次版本已经确定，因此不再询问。标签发布 CI 从已验证的 Git 标签提取版本；普通回归 CI 使用明确的虚构测试版本 `0.0.0`，不上传；不提供版本且没有可读输入时立即报错。旧 `--bump` 参数已移除，避免自动替使用者决定版本级别。工具不提交、打标签、推送或上传。创建 Git 标签前先核对本次选择的版本及打包结果，标签为 `v` 加该版本；本地 `VERSION` 不提交。
 
+SkillHub 页面会将相对 Markdown 链接解析成站内 URL。入口路由使用代码格式列出包内路径，供智能体读取；「在线教程」使用文档站的完整 URL，供网页读者打开。新增路由时同时检查包内文件是否存在和在线教程是否可访问。安装副本中的操作指南应能离线完成口述起步、生成简历与字段更正。
+
 打包前验证：
 
 ```sh
@@ -76,6 +78,8 @@ pnpm install --frozen-lockfile
 pnpm docs:build
 pnpm package
 ```
+
+涉及导出或版式的修改，另在临时公共副本做真实转换验收。使用公开教师示例的中英文正文各导出一次 DOCX 和 PDF，核对单页样例的日期、底部边界、行距和文本完整性。再在临时正文中使用较长机构名并增加带虚构标记的条目，形成跨页样例，逐页检查日期换行、标题与正文是否分离、内容裁切及重复或缺失。记录转换器版本、字体、页数、文本提取核对和实际图像检查结果。缺少转换器时记录未运行；PDF 单元测试使用模拟转换器，实际排版需单独验收。
 
 以输入 `1.1.0` 后生成的通用运行包为例，产物是 `local/dist/releases/1.1.0/career-resume-skill-1.1.0.zip` 与同目录 `SHA256SUMS`、`PACKAGE-INFO.json`。ZIP 顶层为 `career-resume-skill/`，不携带 `VERSION` 文件。包内保留日常运行脚本、规则、模板、最小虚构演示和六份操作指南；空档案在使用时从 starter 创建；不含 `.gitignore`、`AGENTS.md`、`.github/`、`tests/`、维护脚本、维护文档和 Node / VitePress 构建配置。`examples/professions/` 与 `tools/build_site.py` 只服务于源码仓库和文档站，不进入运行包，以保留 SkillHub 的文件数预算。根 README 使用精简运行说明。
 

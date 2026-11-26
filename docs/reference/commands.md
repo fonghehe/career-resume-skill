@@ -29,7 +29,7 @@ python3 scripts/career.py doctor --smoke
 | `python3 scripts/career.py export 正文.md` | 简历正文 → 同名 DOCX；`--output` 可选新路径，`--theme` 选中文主题色 | 单栏模板，校验 DOCX 和文本顺序，已有文件保留 |
 | `python3 scripts/career.py export resume.en.md` | 英文正文 → 黑白 ATS 友好 DOCX；`--page a4` 切换 A4（默认 US Letter） | 国际版忽略主题色；标准版默认 A4，行为不变 |
 | `python3 scripts/career.py export 正文.md --format all` | Markdown → 同名 DOCX 与 PDF；`--format pdf` 只保留 PDF | 本机 LibreOffice；已有 DOCX 可加 `--format pdf` 直接转换；见[导出教程](../guide/export-resume.md) |
-| `python3 scripts/career.py versions compare 旧目录 新目录` | 两份同语言正文与依据报告 → 正文差异和事实 ID 增减 | 英文加 `--language en` |
+| `python3 scripts/career.py versions compare 旧目录 新目录` | 两份同语言正文与依据报告 → 正文差异和事实 ID 增减 | 英文加 `--language en`，相对目录按所选工作副本解析 |
 | `python3 scripts/career.py versions impact --fact E01-T P01-A` | 已有依据报告 → 匹配事实 ID 的版本与主张 | 只读，缺少或无法解析的映射需人工核对 |
 | `python3 scripts/career.py web` | 个人 JSON、项目卡 → `local/showcase/project-timeline.html` | 更新生成 HTML，不修改来源；内嵌完整项目卡 |
 | `python3 scripts/career.py validate` | 本地资料 → 结构、链接、来源与网页一致性检查 | 不能核实职业事实 |

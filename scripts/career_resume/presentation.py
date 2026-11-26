@@ -83,11 +83,11 @@ def profession_modules(data):
             fields = [f'<h3>{escape(item["title"])}</h3>']
             for key in ('subtitle', 'period', 'summary'):
                 if item.get(key):
-                    fields.append('<p>' + escape(item[key]) + '</p>')
+                    fields.append('<p class="professional-' + key + '">' + escape(item[key]) + '</p>')
             if item.get('bullets'):
                 fields.append('<ul>' + ''.join('<li>' + escape(line) + '</li>' for line in item['bullets']) + '</ul>')
             items.append('<article class="professional-item">' + ''.join(fields) + '</article>')
         title = escape(section['title'])
-        modules.append(f'<details class="panel module" id="{identity}" open><summary class="module-summary"><h2>{title}</h2></summary><div class="module-content">' + ''.join(items) + '</div></details>')
+        modules.append(f'<details class="panel module" id="{identity}" open><summary class="module-summary"><h2>{title}</h2></summary><div class="module-content"><div class="professional-grid">' + ''.join(items) + '</div></div></details>')
         links.append(f'<a href="#{identity}">{title}</a>')
     return ''.join(modules), ''.join(links)

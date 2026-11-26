@@ -2,8 +2,6 @@
 
 > Fictional teaching example. Do not submit this resume.
 
-sample@example.test
-
 ## Professional Summary
 
 Built business back-office pages in React and TypeScript, including ticket pages, filtering, form validation, and loading and error states. Participated in API integration with a backend team.

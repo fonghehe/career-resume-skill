@@ -55,6 +55,9 @@ class DemoTests(unittest.TestCase):
                 self.assertIn(notice.encode(), document)
                 page = ET.fromstring(document).find(f'{{{W}}}body/{{{W}}}sectPr/{{{W}}}pgSz')
                 self.assertEqual(page.get(f'{{{W}}}w'), width)
+                # The teaching input provides no contact details in either language.
+                text = ''.join(ET.fromstring(document).itertext())
+                self.assertNotIn('@', text)
         for report in ('match-report.md', 'period-review.md', 'jd-comparison.md'):
             self.assertIn('E01-A', (resume / report).read_text(encoding='utf-8'))
 

@@ -45,6 +45,8 @@
 - `repositories`：`name`、`group`、`projectId`、`start`、`end`、`count`、`tech`、`note`。次数代表署名活动记录，不代表独立成果。
 - `presentation`（可选）：职业显示、主题、栏目标题与自定义职业模块（课程、作品、资格、活动、服务案例等），条目仍带 `factIds` 回到源记录；格式与职业建议见公共 `references/profession-workflow.md`。
 
+`presentation.theme` 可取 `sky`、`sage`、`lavender`、`sea`、`peach`，缺省为 `sky`。它设置生成网页的默认主题，配色来自公共 `assets/themes/palette.json`，更新时保留同一对象中的职业、栏目及顺序设置。个人网页的主题由自然语言请求经智能体写入该字段，再重建网页，页面不提供试色控件。只有 `meta.synthetic: true` 的虚构示例提供即时试色，试色不写回 JSON。分享页保留个人网页的配置主题或虚构示例当前试看的主题，不修改原资料库。`presentation.order` 控制模块顺序，主题与顺序相互独立，详见[网页使用教程](../guide/generate-webpage.md#换主题色与安排栏目)。
+
 Git 采集报告独立保存在私人 `local/output/git-activity/`：`records` 保留 SHA、Author Date、Committer Date、作者邮箱和主题；`repository` 是区间摘要，无匹配则为 null，`timelineEvents` 是可整理为网页 Git 足迹的逐提交事件。`mappingStatus` 默认 pending，不自动成为个人项目事实。`--folder` 的 schemaVersion 2 报告在 `reports` 下保存各仓库及 `relativePath`，另列 `skipped`。同名仓库用相对目录区分。
 
 ## 职级、项目阶段与提交明细（可选）
